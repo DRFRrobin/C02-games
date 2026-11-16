@@ -1,0 +1,36 @@
+name: Publier une version du plugin WordPress
+
+# Pour publier une mise à jour du plugin : mettre à jour "Version" dans
+# wordpress/c02-jeux/c02-jeux.php, puis créer et pousser un tag vX.Y.Z.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Vérifier que la version du plugin correspond au tag
+        run: |
+          tag="${GITHUB_REF_NAME#v}"
+          version=$(sed -n 's/^ \* Version: *//p' wordpress/c02-jeux/c02-jeux.php | tr -d '\r')
+          if [ "$tag" != "$version" ]; then
+            echo "Le tag ($tag) ne correspond pas à la version du plugin ($version)."
+            exit 1
+          fi
+
+      - name: Construire le zip du plugin
+        run: |
+          cd wordpress
+          rm -f c02-jeux.zip
+          zip -qr c02-jeux.zip c02-jeux
+
+      - name: Créer la release avec le zip
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" wordpress/c02-jeux.zip --title "$GITHUB_REF_NAME" --generate-notes

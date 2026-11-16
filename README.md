@@ -69,6 +69,20 @@ La liste est lue en direct dans `games.json`, rien à mettre à jour côté Word
 | `data-ouverture="meme"` | `ouverture="meme"` | Ouvre le jeu dans le même onglet (nouvel onglet par défaut) |
 | — | `url="https://…/"` | Autre adresse du site des jeux |
 
+## Mise à jour du plugin WordPress
+
+Le plugin « C02 Jeux » se met à jour depuis ce dépôt : WordPress affiche la mise à jour dans *Extensions → Mises à jour*, comme les autres plugins. La liste des jeux, elle, se met à jour toute seule sans rien réinstaller.
+
+Pour publier une nouvelle version du plugin :
+
+1. Changer `Version:` dans `wordpress/c02-jeux/c02-jeux.php` (par exemple `1.3.0`).
+2. Reconstruire le zip : `cd wordpress && zip -qr c02-jeux.zip c02-jeux`.
+3. Committer, puis créer et pousser le tag : `git tag v1.3.0 && git push origin v1.3.0`.
+
+Le workflow `release.yml` vérifie que le tag correspond à la version, puis crée la release avec le zip. Les sites ont la mise à jour dans les 12 heures (ou immédiatement via *Extensions → Mises à jour → Vérifier à nouveau*, après avoir vidé le cache du plugin).
+
+Les installations en version 1.1.0 ou plus ancienne ne reçoivent pas la mise à jour automatiquement : il faut une fois réinstaller le zip de cette version.
+
 ## Publication
 
 *Settings → Pages* : **Deploy from a branch**, branche `main`, dossier `/ (root)`.
