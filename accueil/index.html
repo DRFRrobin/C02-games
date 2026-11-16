@@ -391,14 +391,19 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     });
     etat.grille = nouv;
   }
-  // Retire une app ou un dossier de n'importe où.
-  function retirer(cle) {
-    var i = etat.grille.indexOf(cle);
-    if (i >= 0) { etat.grille.splice(i, 1); return true; }
-    var d = dossierContenant(cle);
-    if (d) { d.apps.splice(d.apps.indexOf(cle), 1); return true; }
-    return false;
+  // Position d'un élément de premier niveau (app = texte, dossier = objet) par son identifiant.
+  function indexGrille(cle) {
+    return etat.grille.findIndex(function (x) { return (typeof x === 'string' ? x : x.id) === cle; });
   }
+  // Retire un élément de n'importe où et le rend. Un dossier est déplacé tel quel (avec ses apps).
+  function prendre(cle) {
+    var i = indexGrille(cle);
+    if (i >= 0) return etat.grille.splice(i, 1)[0];
+    var d = dossierContenant(cle);
+    if (d) { d.apps.splice(d.apps.indexOf(cle), 1); return cle; }
+    return null;
+  }
+  function retirer(cle) { return prendre(cle) !== null; }
 
   // ---- Icônes ----
   var STYLE = {
@@ -495,6 +500,8 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     var g = document.getElementById('grille');
     g.textContent = '';
     etat.grille.forEach(function (x, i) {
+      if (typeof x !== 'string' && !estDossier(x)) return;
+      if (typeof x === 'string' && !appDe(x)) return;
       var n = tuile(x);
       if (animerEntree) { n.classList.add('neuf'); n.style.setProperty('--d', (i * 55) + 'ms'); }
       g.appendChild(n);
@@ -640,9 +647,10 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   function reordonnerAvant(cle) {
     if (!geste) return;
     var id = geste.id;
-    retirer(id);
-    var k = etat.grille.indexOf(cle);
-    if (k < 0) etat.grille.push(id); else etat.grille.splice(k, 0, id);
+    var item = prendre(id);
+    if (item === null) return;
+    var k = indexGrille(cle);
+    if (k < 0) etat.grille.push(item); else etat.grille.splice(k, 0, item);
     nettoyer(); sauver(); rendreAvecAnimation(); marquer(id);
   }
   function combiner(cle) {
@@ -654,7 +662,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       var d = trouverDossier(cle);
       if (d) d.apps.push(id); else etat.grille.push(id);
     } else {
-      var idx = etat.grille.indexOf(cle);
+      var idx = indexGrille(cle);
       if (idx < 0) etat.grille.push(id);
       else { var nid = nouvelId(); dossierNeuf = nid; etat.grille[idx] = { type: 'dossier', id: nid, nom: 'Dossier', apps: [cle, id] }; }
     }
