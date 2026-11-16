@@ -2,7 +2,8 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Accueil C02</title>
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#333033">
@@ -11,7 +12,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="C02">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="claude:viewport-fit-sides" content="cover">
+
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 <style>
@@ -26,7 +27,7 @@
 html, body { height: 100%; }
 body {
   margin: 0; color: var(--texte); font-family: 'Inter', system-ui, sans-serif; overflow: hidden;
-  background: var(--fond-bg) center / cover fixed no-repeat;
+  background: var(--fond-bg) center / cover no-repeat;
 }
 .statut { position: fixed; top: env(safe-area-inset-top,0px); left: 0; right: 0; padding: 14px max(24px, env(safe-area-inset-left,0px)) 0; font-weight: 600; font-size: 15px; z-index: 5; pointer-events: none; }
 .pages { position: fixed; inset: 0; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
@@ -165,9 +166,22 @@ body.fondu { animation: fondu .55s ease; }
 .maj-bandeau { position: fixed; left: 12px; right: 12px; bottom: calc(96px + env(safe-area-inset-bottom,0px)); z-index: 70; display: flex; align-items: center; justify-content: space-between; gap: 12px; background: var(--feuille); border: 1px solid rgba(255,51,51,.5); border-radius: 18px; padding: 12px 14px; box-shadow: 0 12px 30px rgba(0,0,0,.45); }
 .maj-bandeau p { margin: 0; font-size: 14px; }
 .maj-bandeau button { font: inherit; font-weight: 600; font-size: 14px; color: var(--texte); background: var(--rouge); border: 0; border-radius: 22px; padding: 9px 14px; cursor: pointer; white-space: nowrap; }
+/* Jeux : vue plein écran dans l'accueil */
+.jeu-plein { position: fixed; inset: 0; z-index: 80; display: flex; flex-direction: column; background: #050d1b; }
+.jeu-barre { flex: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: calc(10px + env(safe-area-inset-top,0px)) max(14px, env(safe-area-inset-right,0px)) 10px max(14px, env(safe-area-inset-left,0px)); background: rgba(15,15,18,.85); color: #fff; font-weight: 600; font-size: 15px; }
+.jeu-barre button { font: inherit; color: #fff; background: rgba(255,255,255,.16); border: 0; border-radius: 22px; padding: 8px 14px; cursor: pointer; }
+.jeu-cadre { flex: 1; width: 100%; border: 0; display: block; background: #050d1b; }
 </style>
 </head>
 <body>
+  <section class="jeu-plein" id="jeu-plein" role="dialog" aria-modal="true" aria-label="Jeu" hidden>
+    <div class="jeu-barre">
+      <button type="button" id="jeu-fermer">Fermer</button>
+      <span id="jeu-titre"></span>
+      <span style="width:58px"></span>
+    </div>
+    <iframe class="jeu-cadre" id="jeu-cadre" title="Jeu" allow="fullscreen; clipboard-write"></iframe>
+  </section>
   <div class="maj-bandeau" id="maj-bandeau" role="status" hidden>
     <p>Une nouvelle version est disponible.</p>
     <button type="button" id="maj-appliquer">Mettre à jour</button>
@@ -558,11 +572,22 @@ body.fondu { animation: fondu .55s ease; }
     }
     ouvrirLien(web);
   }
+  function ouvrirJeu(app) {
+    document.getElementById('jeu-titre').textContent = app.nom;
+    document.getElementById('jeu-cadre').src = app.href;
+    document.getElementById('jeu-plein').hidden = false;
+  }
+  function fermerJeu() {
+    document.getElementById('jeu-cadre').src = 'about:blank';
+    document.getElementById('jeu-plein').hidden = true;
+  }
+  document.getElementById('jeu-fermer').addEventListener('click', fermerJeu);
   function ouvrir(cle, kind) {
     if (kind === 'dossier') return ouvrirDossier(cle);
     var app = appDe(cle);
     if (!app || !app.href) return;
     if (app.native) return ouvrirNatif(app);
+    if (app.categorie === 'jeu') return ouvrirJeu(app);
     ouvrirLien(app.href);
   }
 
@@ -746,7 +771,7 @@ body.fondu { animation: fondu .55s ease; }
   document.getElementById('onglet-reglages').addEventListener('click', ouvrirReglages);
   document.getElementById('fermer').addEventListener('click', fermerReglages);
   voile.addEventListener('click', fermerReglages);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { fermerReglages(); fermerDossier(); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { fermerReglages(); fermerDossier(); fermerJeu(); } });
 
   // ---- Heure ----
   function majHeure() {
