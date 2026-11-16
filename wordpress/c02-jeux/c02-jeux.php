@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/DRFRrobin/C02-games
  * Update URI: https://github.com/DRFRrobin/C02-games
  * Description: Affiche les jeux de la C02 Team avec le shortcode [c02_jeux]. La liste se met à jour toute seule quand un jeu est ajouté au dépôt.
- * Version: 1.2.0
+ * Version: 1.3.1
  * Author: DRFRrobin
  * License: MIT
  */
