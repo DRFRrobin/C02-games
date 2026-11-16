@@ -1,0 +1,16 @@
+{
+  "jeux": [
+    {
+      "slug": "c02-naval",
+      "titre": "C02 Naval",
+      "description": "Bataille navale à deux joueurs, sur PC ou téléphone. En ligne, entre amis ou contre un bot, avec radar, frappe en croix et bouclier.",
+      "badge": "Multijoueur",
+      "icone": "🎮",
+      "couleur": "#050d1b",
+      "image": "games/c02-naval/icone.png",
+      "date": "2026-11-16",
+      "chemin": "https://drfrrobin.github.io/C02-Naval/",
+      "externe": true
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+name: Mettre à jour la liste des jeux
+
+# Régénère games.json à chaque push et le commite s'il a changé.
+# GitHub Pages (Settings → Pages → Deploy from a branch → main) publie ensuite le site.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'games/**'
+      - 'scripts/build.mjs'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Générer games.json
+        run: node scripts/build.mjs
+      - name: Commiter games.json s'il a changé
+        run: |
+          if git diff --quiet -- games.json; then
+            echo "games.json déjà à jour"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add games.json
+          git commit -m "Mise à jour automatique de games.json"
+          git push
