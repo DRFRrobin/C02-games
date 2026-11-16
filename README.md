@@ -86,3 +86,9 @@ Les installations en version 1.1.0 ou plus ancienne ne reçoivent pas la mise à
 ## Publication
 
 *Settings → Pages* : **Deploy from a branch**, branche `main`, dossier `/ (root)`.
+
+## Accueil (écran d'accueil façon iPhone)
+
+- **Adresse** : https://drfrrobin.github.io/C02-games/accueil/
+- **Fichier** : `accueil/index.html` (un seul fichier, aucune dépendance locale).
+- **Mise à jour** : chaque push sur `main` republie la page. La page WordPress d'accueil l'affiche en plein écran, donc les visiteurs voient la dernière version automatiquement.

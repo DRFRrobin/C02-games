@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accueil C02</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --rouge: #ff3333; --texte: #ffffff; --doux: rgba(255,255,255,.72); --verre: rgba(255,255,255,.14);
+  --feuille: #262428; --barre: rgba(20,19,22,.72);
+  color-scheme: dark;
+  padding-top: env(safe-area-inset-top, 0px);
+  --fond-bg: radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.42) 0%, rgba(255,51,51,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(255,51,51,.18) 0%, rgba(255,51,51,0) 60%), #333033;
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; color: var(--texte); font-family: 'Inter', system-ui, sans-serif; overflow: hidden;
+  background: var(--fond-bg) center / cover fixed no-repeat;
+}
+.statut { position: fixed; top: env(safe-area-inset-top,0px); left: 0; right: 0; padding: 14px max(24px, env(safe-area-inset-left,0px)) 0; font-weight: 600; font-size: 15px; z-index: 5; pointer-events: none; }
+.pages { position: fixed; inset: 0; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.pages::-webkit-scrollbar { display: none; }
+.page {
+  flex: 0 0 100%; width: 100%; height: 100%; scroll-snap-align: start; overflow-y: auto;
+  padding: calc(56px + env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-left,0px)) calc(96px + env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-right,0px));
+}
+.page-titre { text-align: center; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--doux); margin: 8px 0 0; }
+.grille {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(74px, 1fr)); gap: 26px 8px;
+  justify-items: center; width: 100%; max-width: 1100px; margin: 22px auto 0; padding: 0; list-style: none;
+}
+.store-section { max-width: 1100px; margin: 26px auto 0; }
+.store-section h2 { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--doux); margin: 0 0 12px; font-weight: 600; }
+.store-liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+.store-ligne { display: flex; align-items: center; gap: 14px; background: var(--verre); border-radius: 18px; padding: 12px 14px; }
+.store-ligne .icone { width: 56px; flex: none; }
+.store-texte { flex: 1; min-width: 0; }
+.store-texte p { margin: 0; font-weight: 600; }
+.store-texte small { color: var(--doux); }
+.bouton { font: inherit; font-weight: 500; color: var(--texte); background: var(--rouge); border: 0; border-radius: 30px; padding: 8px 16px; cursor: pointer; flex: none; }
+.bouton.non { background: rgba(255,255,255,.18); }
+
+.app { display: flex; flex-direction: column; align-items: center; gap: 7px; width: 100%; min-width: 0; color: inherit; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none; outline: none; border-radius: 18px; }
+.app:focus-visible { box-shadow: 0 0 0 2px var(--rouge); }
+.app.source { opacity: .25; }
+.icone { width: min(76px, 100%); aspect-ratio: 1; border-radius: 22%; overflow: hidden; display: grid; place-items: center; box-shadow: 0 6px 14px rgba(0,0,0,.35); background: #1e1d1f; }
+.icone img, .icone svg { width: 100%; height: 100%; display: block; pointer-events: none; }
+.icone img.logo { width: 78%; height: 78%; object-fit: contain; }
+.nom { font-size: 12px; font-weight: 500; text-align: center; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+body.sans-noms .nom { display: none; }
+
+.fantome { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 50; opacity: .95; }
+.fantome .icone { box-shadow: 0 16px 30px rgba(0,0,0,.5); }
+
+.vide { text-align: center; margin: 14vh auto 0; max-width: 340px; }
+.vide h2 { margin: 0 0 8px; font-size: 22px; }
+.vide p { margin: 0 0 26px; color: var(--doux); }
+.bouton-store { display: inline-flex; align-items: center; gap: 10px; font: inherit; font-size: 17px; font-weight: 600; color: var(--texte); background: var(--rouge); border: 0; border-radius: 34px; padding: 16px 30px; cursor: pointer; box-shadow: 0 12px 30px rgba(255,51,51,.4); }
+.bouton-store svg { width: 22px; height: 22px; }
+.bouton-store:active { transform: scale(.97); }
+.recherche { max-width: 1100px; margin: 18px auto 0; }
+.recherche input { width: 100%; font: inherit; font-size: 16px; color: var(--texte); background: var(--verre); border: 1px solid rgba(255,255,255,.12); border-radius: 30px; padding: 14px 20px; outline: none; }
+.recherche input::placeholder { color: var(--doux); }
+.recherche input:focus { border-color: var(--rouge); }
+.aucun { text-align: center; color: var(--doux); margin: 28px 0 0; }
+.grille-dossier { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; padding: 9px; background: rgba(255,255,255,.2); align-items: start; justify-items: stretch; }
+.grille-dossier .mini { display: block; width: 100%; min-width: 0; aspect-ratio: 1; border-radius: 22%; overflow: hidden; }
+.grille-dossier .mini svg { display: block; width: 100%; height: 100%; }
+.voile-dossier { z-index: 62; }
+.dossier { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(92vw, 420px); max-height: 80vh; overflow: auto; z-index: 63; background: var(--feuille); border-radius: 26px; padding: 14px 18px 18px; box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+.dossier-entete { display: flex; gap: 10px; align-items: center; margin-bottom: 14px; }
+.titre-dossier { flex: 1; min-width: 0; font: inherit; font-size: 20px; font-weight: 600; color: var(--texte); background: transparent; border: 1px solid transparent; border-radius: 12px; padding: 6px 10px; outline: none; text-align: center; }
+.titre-dossier:hover { border-color: rgba(255,255,255,.15); }
+.titre-dossier:focus { border-color: var(--rouge); background: rgba(255,255,255,.06); }
+.fermer-petit { flex: none; width: 34px; height: 34px; border-radius: 50%; border: 0; background: var(--verre); color: var(--texte); font: inherit; cursor: pointer; }
+.dossier .grille { margin-top: 0; }
+.dossier .note { margin-top: 14px; }
+/* Barre du bas : Mes apps, Store, Paramètres */
+.barre {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom,0px)); z-index: 10;
+  display: flex; gap: 6px; padding: 8px; border-radius: 30px; background: var(--barre); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 10px 30px rgba(0,0,0,.35); width: min(92vw, 380px); justify-content: space-between;
+}
+.onglet { flex: 1; font: inherit; font-size: 13px; font-weight: 500; color: var(--doux); background: none; border: 0; border-radius: 22px; padding: 10px 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.onglet svg { width: 22px; height: 22px; }
+.onglet[aria-selected="true"] { color: var(--texte); background: var(--verre); }
+
+/* Feuille Paramètres */
+.voile { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 60; }
+.feuille {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 61; background: var(--feuille); color: var(--texte);
+  border-radius: 22px 22px 0 0; padding: 14px max(20px, env(safe-area-inset-left,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(20px, env(safe-area-inset-right,0px));
+  max-height: 85vh; overflow: auto; box-shadow: 0 -10px 40px rgba(0,0,0,.4);
+}
+.poignee { width: 40px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.3); margin: 0 auto 12px; }
+.feuille h2 { margin: 0 0 10px; font-size: 20px; }
+.feuille h3 { margin: 18px 0 10px; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--doux); font-weight: 600; }
+.fonds { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 10px; }
+.fond { font: inherit; color: var(--texte); background: none; border: 2px solid transparent; border-radius: 16px; padding: 4px; cursor: pointer; text-align: center; font-size: 12px; }
+.fond span { display: block; height: 58px; border-radius: 12px; margin-bottom: 6px; }
+.fond[aria-pressed="true"] { border-color: var(--texte); }
+.ligne { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,.1); }
+.ligne p { margin: 0; }
+.ligne small { display: block; color: var(--doux); margin-top: 2px; }
+.interrupteur { width: 50px; height: 30px; appearance: none; -webkit-appearance: none; background: rgba(255,255,255,.2); border-radius: 15px; position: relative; cursor: pointer; flex: none; transition: background .2s; }
+.interrupteur::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #fff; transition: transform .2s; }
+.interrupteur:checked { background: var(--rouge); }
+.interrupteur:checked::after { transform: translateX(20px); }
+.fichier { display: inline-block; font: inherit; font-weight: 500; color: var(--texte); background: var(--verre); border-radius: 30px; padding: 10px 18px; cursor: pointer; }
+.fichier input { display: none; }
+.note { color: var(--doux); font-size: 13px; margin: 12px 0 0; }
+.fermer { display: block; margin: 18px auto 0; font: inherit; font-weight: 500; color: var(--texte); background: var(--rouge); border: 0; border-radius: 30px; padding: 10px 28px; cursor: pointer; }
+[hidden] { display: none !important; }
+@media (prefers-reduced-motion: reduce) { .interrupteur, .interrupteur::after { transition: none; } .pages { scroll-behavior: auto; } }
+/* Animations */
+@keyframes apparition { from { opacity: 0; transform: scale(.5); } to { opacity: 1; transform: none; } }
+@keyframes montee { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes fondu { from { opacity: .4; } to { opacity: 1; } }
+@keyframes battement { 0%, 100% { box-shadow: 0 12px 30px rgba(255,51,51,.4); } 50% { box-shadow: 0 12px 46px rgba(255,51,51,.75); } }
+.app.neuf { animation: apparition .5s cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d, 0ms); }
+.app .icone { transition: transform .18s ease, box-shadow .25s ease; }
+.app:active .icone { transform: scale(.9); }
+.app.source .icone { transform: scale(.94); }
+.page-titre { animation: fondu .5s ease both; }
+.vide { animation: montee .6s cubic-bezier(.2,.8,.2,1) both; }
+.bouton-store { animation: battement 2.4s ease-in-out infinite; }
+@keyframes montee-barre { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+.barre { animation: montee-barre .6s cubic-bezier(.2,.8,.2,1) both; }
+.onglet { transition: background .25s ease, color .25s ease; }
+.onglet:active { transform: scale(.96); }
+.fond { transition: transform .2s ease, border-color .2s ease; }
+.fond:hover { transform: scale(1.04); }
+.fond:active { transform: scale(.96); }
+body.fondu { animation: fondu .55s ease; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+  <div class="statut"><span id="heure">--:--</span></div>
+
+  <div class="pages" id="pages">
+    <section class="page" id="page-apps" aria-label="Mes apps">
+      <p class="page-titre">Mes apps</p>
+      <div class="vide" id="vide" hidden>
+        <h2>Ton écran est vide</h2>
+        <p>Ajoute tes jeux et applications depuis le Store.</p>
+        <button class="bouton-store" id="ouvrir-store" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10.5a1 1 0 0 1-1 .5H6.5a1 1 0 0 1-1-.5L4 9z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+          Ouvrir le Store
+        </button>
+      </div>
+      <ul class="grille" id="grille"></ul>
+    </section>
+
+    <section class="page" id="page-store" aria-label="Store">
+      <p class="page-titre">Store</p>
+      <div class="recherche">
+        <input type="search" id="recherche" placeholder="Rechercher une app ou un jeu" aria-label="Rechercher une app ou un jeu" autocomplete="off">
+      </div>
+      <p class="aucun" id="aucun" hidden>Aucun résultat pour cette recherche.</p>
+      <div class="store-section">
+        <h2>Jeux</h2>
+        <ul class="store-liste" id="store-jeux"></ul>
+      </div>
+      <div class="store-section">
+        <h2>Applications</h2>
+        <ul class="store-liste" id="store-apps"></ul>
+      </div>
+    </section>
+  </div>
+
+  <nav class="barre" aria-label="Navigation">
+    <button class="onglet" id="onglet-apps" role="tab" aria-selected="true" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+      Mes apps
+    </button>
+    <button class="onglet" id="onglet-store" role="tab" aria-selected="false" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h16l-1.5 10.5a1 1 0 0 1-1 .5H6.5a1 1 0 0 1-1-.5L4 9z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/></svg>
+      Store
+    </button>
+    <button class="onglet" id="onglet-reglages" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Paramètres
+    </button>
+  </nav>
+
+  <div class="voile" id="voile" hidden></div>
+  <div class="voile voile-dossier" id="voile-dossier" hidden></div>
+  <section class="dossier" id="dossier" role="dialog" aria-modal="true" aria-label="Dossier" hidden>
+    <div class="poignee"></div>
+    <div class="dossier-entete">
+      <input type="text" id="titre-dossier" class="titre-dossier" maxlength="30" aria-label="Nom du dossier" autocomplete="off">
+      <button class="fermer-petit" id="fermer-dossier" type="button" aria-label="Fermer le dossier">✕</button>
+    </div>
+    <div class="grille" id="grille-dossier"></div>
+    <p class="note">Renomme le dossier en tapant son nom. Glisse une app hors du dossier pour la sortir.</p>
+  </section>
+  <section class="feuille" id="feuille" role="dialog" aria-modal="true" aria-labelledby="titre-reglages" hidden>
+    <div class="poignee"></div>
+    <h2 id="titre-reglages">Paramètres</h2>
+
+    <h3>Fond d'écran</h3>
+    <div class="fonds" id="fonds"></div>
+    <div class="ligne" style="margin-top:12px">
+      <p>Ta propre image<small>Enregistrée sur cet appareil</small></p>
+      <label class="fichier">Choisir<input type="file" id="fichier-fond" accept="image/*"></label>
+    </div>
+
+    <h3>Accueil</h3>
+    <div class="ligne">
+      <p>Afficher les noms<small>Sous chaque icône</small></p>
+      <input type="checkbox" class="interrupteur" id="interrupteur-noms" aria-label="Afficher les noms">
+    </div>
+    <div class="ligne">
+      <p>Ordre des apps<small>Glisse une app pour la déplacer</small></p>
+      <button class="bouton non" id="reinitialiser" type="button">Réinitialiser</button>
+    </div>
+    <p class="note">Les réglages sont enregistrés sur cet appareil.</p>
+    <button class="fermer" id="fermer" type="button">Fermer</button>
+  </section>
+
+<script>
+(function () {
+  // Icônes : Naval et Cloud et TM en image ; Speed et Lien redessinées en SVG (style Naval).
+  var APPS =  [{"id": "naval", "nom": "C02 Naval", "kind": "lien", "categorie": "jeu", "description": "Bataille navale à deux joueurs", "href": "https://drfrrobin.github.io/C02-Naval/", "svg": true, "fond": "#050d1b"}, {"id": "cloud", "nom": "NC Cloud", "kind": "lien", "categorie": "app", "description": "Nextcloud de la C02 Team", "href": "https://nc.c02.app/", "svg": true, "fond": "#050d1b"}, {"id": "speed", "nom": "Speed Test", "kind": "lien", "categorie": "app", "description": "Test de débit", "href": "https://sp.c02.app/", "svg": true, "fond": "#050d1b"}, {"id": "lien", "nom": "Lien", "kind": "lien", "categorie": "app", "description": "Raccourcisseur de liens", "href": "https://link.c02.app/link", "svg": true, "fond": "#050d1b"}, {"id": "tm", "nom": "Transport Manager", "kind": "lien", "categorie": "jeu", "description": "Gestion de transport", "href": "https://c02.app/tm/", "svg": true, "fond": "#06291a"}]
+  var FONDS = [
+    { id: 'gris', nom: 'Gris rouge', css: 'radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.42) 0%, rgba(255,51,51,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(255,51,51,.18) 0%, rgba(255,51,51,0) 60%), #333033', apercu: '#333033' },
+    { id: 'violet', nom: 'Violet', css: 'radial-gradient(120% 60% at 90% 0%, rgba(168,85,247,.5) 0%, rgba(168,85,247,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(236,72,153,.22) 0%, rgba(236,72,153,0) 60%), #1d1830', apercu: '#1d1830' },
+    { id: 'vert', nom: 'Vert', css: 'radial-gradient(120% 60% at 90% 0%, rgba(16,185,129,.45) 0%, rgba(16,185,129,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(132,204,22,.18) 0%, rgba(132,204,22,0) 60%), #0b1f17', apercu: '#0b1f17' },
+    { id: 'ocean', nom: 'Océan', css: 'radial-gradient(120% 60% at 90% 0%, rgba(14,165,233,.5) 0%, rgba(14,165,233,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(59,130,246,.2) 0%, rgba(59,130,246,0) 60%), #0c1a2e', apercu: '#0c1a2e' },
+    { id: 'noir', nom: 'Noir', css: 'radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.25) 0%, rgba(255,51,51,0) 60%), #0a0a0a', apercu: '#0a0a0a' }
+  ];
+  var CLE_ORDRE = 'c02-accueil-ordre', CLE_REGLAGES = 'c02-accueil-reglages';
+  var DEFAUT_ORDRE = { grille: [] };
+
+  // ---- Stockage local ----
+  function lire(c) { try { return JSON.parse(localStorage.getItem(c)); } catch (e) { return null; } }
+  function ecrire(c, v) { try { localStorage.setItem(c, JSON.stringify(v)); } catch (e) {} }
+
+  var ids = APPS.map(function (a) { return a.id; });
+  function appDe(id) { return APPS.filter(function (a) { return a.id === id; })[0]; }
+  function estDossier(x) { return !!x && typeof x === 'object' && x.type === 'dossier'; }
+  function estDossierKey(k) { return typeof k === 'string' && k.indexOf('f_') === 0; }
+  function nouvelId() { return 'f_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+
+  // La grille contient des apps (texte = identifiant) ou des dossiers (objets).
+  function charger() {
+    var o = lire(CLE_ORDRE) || { grille: [] }, vus = {}, grille = [];
+    (o.grille || []).forEach(function (x) {
+      if (typeof x === 'string') {
+        if (ids.indexOf(x) >= 0 && !vus[x]) { vus[x] = 1; grille.push(x); }
+      } else if (estDossier(x)) {
+        var apps = (x.apps || []).filter(function (id) {
+          if (ids.indexOf(id) >= 0 && !vus[id]) { vus[id] = 1; return true; }
+          return false;
+        });
+        grille.push({ type: 'dossier', id: String(x.id || nouvelId()), nom: String(x.nom || 'Dossier').slice(0, 30), apps: apps });
+      }
+    });
+    return { grille: grille };
+  }
+  var etat = charger();
+  var reglages = Object.assign({ noms: true, fond: 'gris', fondPerso: null }, lire(CLE_REGLAGES) || {});
+  function sauver() { ecrire(CLE_ORDRE, etat); }
+
+  function trouverDossier(id) { return etat.grille.filter(function (x) { return estDossier(x) && x.id === id; })[0] || null; }
+  function dossierContenant(appId) { return etat.grille.filter(function (x) { return estDossier(x) && x.apps.indexOf(appId) >= 0; })[0] || null; }
+  function surAccueil(appId) { return etat.grille.indexOf(appId) >= 0 || !!dossierContenant(appId); }
+
+  // Un dossier vide disparaît ; un dossier avec une seule app redevient une app.
+  function nettoyer() {
+    var nouv = [];
+    etat.grille.forEach(function (x) {
+      if (!estDossier(x)) { nouv.push(x); return; }
+      if (x.apps.length === 0) return;
+      if (x.apps.length === 1) { nouv.push(x.apps[0]); return; }
+      nouv.push(x);
+    });
+    etat.grille = nouv;
+  }
+  // Retire une app ou un dossier de n'importe où.
+  function retirer(cle) {
+    var i = etat.grille.indexOf(cle);
+    if (i >= 0) { etat.grille.splice(i, 1); return true; }
+    var d = dossierContenant(cle);
+    if (d) { d.apps.splice(d.apps.indexOf(cle), 1); return true; }
+    return false;
+  }
+
+  // ---- Icônes ----
+  var STYLE = {
+    naval: ['#1565c0', '#050d1b', '#8fd3ff'],
+    cloud: ['#1565c0', '#050d1b', '#8fd3ff'],
+    tm:    ['#14c27a', '#06291a', '#ffffff'],
+    speed: ['#1565c0', '#050d1b', '#8fd3ff'],
+    lien:  ['#1565c0', '#050d1b', '#8fd3ff']
+  };
+  var GLYPHE = {
+    naval: '<circle cx="48" cy="26" r="7" fill="none" stroke="{c}" stroke-width="6"/><path d="M48 33 V78 M34 44 H62" stroke="{c}" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M20 56 Q28 80 48 80 Q68 80 76 56 M20 56 L30 56 M76 56 L66 56" stroke="{c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+    cloud: '<path d="M28 68 H66 A14 14 0 0 0 66 40 A20 20 0 0 0 30 34 A15 15 0 0 0 28 68 Z" fill="{c}"/><text x="48" y="60" text-anchor="middle" font-family="Arial Black, Arial, sans-serif" font-weight="900" font-size="19" fill="#050d1b">NC</text>',
+    tm: '<circle cx="26" cy="70" r="7" fill="{c}"/><circle cx="70" cy="26" r="7" fill="none" stroke="{c}" stroke-width="6"/><path d="M30 68 C44 68 40 46 52 46 S64 34 66 30" stroke="{c}" stroke-width="6" stroke-linecap="round" fill="none"/>',
+    speed: '<path d="M22 66 A30 30 0 1 1 74 66" fill="none" stroke="{c}" stroke-width="7" stroke-linecap="round"/><line x1="48" y1="56" x2="64" y2="36" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/><circle cx="48" cy="56" r="6" fill="{c}"/>',
+    lien: '<rect x="18" y="38" width="34" height="20" rx="10" transform="rotate(-45 35 48)" fill="none" stroke="{c}" stroke-width="7"/><rect x="44" y="38" width="34" height="20" rx="10" transform="rotate(-45 61 48)" fill="none" stroke="#ffffff" stroke-width="7"/>'
+  };
+  function svgIcone(app) {
+    var s = STYLE[app.id], g = 'g' + app.id;
+    return '<svg viewBox="0 0 96 96" aria-hidden="true"><defs><linearGradient id="' + g + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="' + s[0] + '"/><stop offset="1" stop-color="' + s[1] + '"/></linearGradient></defs><rect width="96" height="96" rx="22" fill="url(#' + g + ')"/>' + GLYPHE[app.id].split('{c}').join(s[2]) + '</svg>';
+  }
+  function iconeHTML(app) { return svgIcone(app); }
+
+  // ---- Animations ----
+  var REDUIT = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+  var SOUPLE = 'cubic-bezier(.2,.8,.2,1)';
+  var animerEntree = false, dossierNeuf = null, fondPret = false, storeAffiche = false;
+  function anime(el, images, opts) {
+    if (REDUIT || !el || !el.animate) return null;
+    return el.animate(images, opts);
+  }
+  function afficher(el, depuis, vers) {
+    el._tok = (el._tok || 0) + 1;
+    el.hidden = false;
+    anime(el, [{ opacity: 0, transform: depuis }, { opacity: 1, transform: vers }], { duration: 280, easing: SOUPLE });
+  }
+  function masquer(el, depuis, vers) {
+    el._tok = (el._tok || 0) + 1;
+    var mon = el._tok;
+    var a = anime(el, [{ opacity: 1, transform: vers }, { opacity: 0, transform: depuis }], { duration: 200, easing: 'ease-in', fill: 'forwards' });
+    if (a) a.onfinish = function () { if (el._tok === mon) el.hidden = true; }; else el.hidden = true;
+  }
+  // Réorganise la grille en glissant les icônes de leur ancienne place à la nouvelle.
+  function rendreAvecAnimation() {
+    var avant = {};
+    document.querySelectorAll('#grille .app[data-key]').forEach(function (n) { avant[n.dataset.key] = n.getBoundingClientRect(); });
+    rendre();
+    document.querySelectorAll('#grille .app[data-key]').forEach(function (n) {
+      var a = avant[n.dataset.key];
+      if (!a) return;
+      var b = n.getBoundingClientRect(), dx = a.left - b.left, dy = a.top - b.top;
+      if (dx || dy) anime(n, [{ transform: 'translate(' + dx + 'px,' + dy + 'px)' }, { transform: 'none' }], { duration: 300, easing: SOUPLE });
+    });
+    if (dossierNeuf) {
+      var nouveau = document.querySelector('#grille .app[data-key="' + dossierNeuf + '"] .icone');
+      anime(nouveau, [{ transform: 'scale(.6)' }, { transform: 'scale(1.1)' }, { transform: 'scale(1)' }], { duration: 420, easing: SOUPLE });
+      dossierNeuf = null;
+    }
+  }
+  function flashFond() { if (!fondPret) return; document.body.classList.remove('fondu'); void document.body.offsetWidth; document.body.classList.add('fondu'); }
+
+  // ---- Affichage ----
+  function tuile(x) {
+    var a = document.createElement('div');
+    a.className = 'app';
+    a.setAttribute('role', 'button'); a.tabIndex = 0;
+    var ic = document.createElement('span'); ic.className = 'icone';
+    var nom = document.createElement('span'); nom.className = 'nom';
+    if (estDossier(x)) {
+      a.dataset.key = x.id; a.dataset.kind = 'dossier';
+      ic.classList.add('grille-dossier');
+      x.apps.slice(0, 9).forEach(function (id) {
+        var app = appDe(id), m = document.createElement('span');
+        m.className = 'mini'; m.style.background = app.fond; m.innerHTML = iconeHTML(app);
+        ic.appendChild(m);
+      });
+      nom.textContent = x.nom; a.setAttribute('aria-label', 'Dossier ' + x.nom);
+    } else {
+      var app = appDe(x);
+      a.dataset.key = x; a.dataset.kind = app.kind || 'lien';
+      ic.style.background = app.fond; ic.innerHTML = iconeHTML(app);
+      nom.textContent = app.nom; a.setAttribute('aria-label', app.nom);
+    }
+    a.appendChild(ic); a.appendChild(nom);
+    return a;
+  }
+  function rendre() {
+    var g = document.getElementById('grille');
+    g.textContent = '';
+    etat.grille.forEach(function (x, i) {
+      var n = tuile(x);
+      if (animerEntree) { n.classList.add('neuf'); n.style.setProperty('--d', (i * 55) + 'ms'); }
+      g.appendChild(n);
+    });
+    animerEntree = false;
+    document.getElementById('vide').hidden = etat.grille.length > 0;
+    g.hidden = etat.grille.length === 0;
+    rendreStore();
+    if (dossierOuvert) rendreDossier();
+  }
+  function correspond(app, terme) {
+    if (!terme) return true;
+    return (app.nom + ' ' + (app.description || '')).toLowerCase().indexOf(terme) >= 0;
+  }
+  function rendreStore() {
+    var terme = document.getElementById('recherche').value.trim().toLowerCase();
+    var total = 0;
+    ['jeu', 'app'].forEach(function (cat) {
+      var ul = document.getElementById(cat === 'jeu' ? 'store-jeux' : 'store-apps');
+      ul.parentElement.hidden = true;
+      ul.textContent = '';
+      var liste = APPS.filter(function (a) { return a.categorie === cat && correspond(a, terme); });
+      total += liste.length;
+      ul.parentElement.hidden = liste.length === 0;
+      liste.forEach(function (app) {
+        var li = document.createElement('li'); li.className = 'store-ligne';
+        var ic = document.createElement('span'); ic.className = 'icone'; ic.style.background = app.fond;
+        ic.innerHTML = iconeHTML(app);
+        var txt = document.createElement('div'); txt.className = 'store-texte';
+        var p = document.createElement('p'); p.textContent = app.nom;
+        var s = document.createElement('small'); s.textContent = app.description || '';
+        txt.appendChild(p); txt.appendChild(s);
+        var dedans = surAccueil(app.id);
+        var b = document.createElement('button'); b.type = 'button'; b.className = 'bouton' + (dedans ? ' non' : '');
+        b.textContent = dedans ? 'Retirer' : 'Ajouter';
+        b.addEventListener('click', function () { basculer(app.id); });
+        li.appendChild(ic); li.appendChild(txt); li.appendChild(b);
+        ul.appendChild(li);
+      });
+    });
+    document.getElementById('aucun').hidden = total > 0;
+  }
+  document.getElementById('recherche').addEventListener('input', rendreStore);
+  function basculer(id) {
+    if (surAccueil(id)) retirer(id); else { etat.grille.push(id); animerEntree = true; }
+    nettoyer(); sauver(); rendre();
+  }
+
+  // ---- Dossier ouvert ----
+  var dossierOuvert = null;
+  var dossierEl = document.getElementById('dossier'), voileDossier = document.getElementById('voile-dossier');
+  var titreDossier = document.getElementById('titre-dossier'), grilleDossier = document.getElementById('grille-dossier');
+  function ouvrirDossier(id) { dossierOuvert = id; voileDossier.hidden = false; anime(voileDossier, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 }); rendreDossier(); afficher(dossierEl, 'translate(-50%,-50%) scale(.85)', 'translate(-50%,-50%) scale(1)'); }
+  function fermerDossier() { if (dossierOuvert === null && dossierEl.hidden) return; dossierOuvert = null; masquer(dossierEl, 'translate(-50%,-50%) scale(.9)', 'translate(-50%,-50%) scale(1)'); masquer(voileDossier, '', ''); }
+  function rendreDossier() {
+    var d = trouverDossier(dossierOuvert);
+    if (!d) { fermerDossier(); return; }
+    if (document.activeElement !== titreDossier) titreDossier.value = d.nom;
+    grilleDossier.textContent = '';
+    d.apps.forEach(function (id) { var tt = tuile(id); tt.dataset.dans = d.id; grilleDossier.appendChild(tt); });
+  }
+  function renommerDossier() {
+    var d = trouverDossier(dossierOuvert);
+    if (!d) return;
+    d.nom = titreDossier.value.trim().slice(0, 30) || 'Dossier';
+    titreDossier.value = d.nom;
+    sauver(); rendre();
+  }
+  titreDossier.addEventListener('change', renommerDossier);
+  titreDossier.addEventListener('keydown', function (e) { if (e.key === 'Enter') titreDossier.blur(); });
+  document.getElementById('fermer-dossier').addEventListener('click', fermerDossier);
+  voileDossier.addEventListener('click', fermerDossier);
+
+  // ---- Glisser : créer un dossier, ajouter à un dossier, réordonner, sortir d'un dossier ----
+  var geste = null, fantome = null, MIN = 8;
+  function centreDans(el, x, y, zone) {
+    var r = el.getBoundingClientRect();
+    return Math.abs(x - (r.left + r.width / 2)) < r.width * zone && Math.abs(y - (r.top + r.height / 2)) < r.height * zone;
+  }
+  function dansDossier(x, y) {
+    var r = dossierEl.getBoundingClientRect();
+    return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
+  }
+  function placer(x, y) {
+    if (!fantome) return;
+    fantome.style.transform = 'translate(' + (x - fantome.offsetWidth / 2) + 'px,' + (y - fantome.offsetHeight / 2) + 'px) scale(1.08)';
+  }
+  function marquer(cle) {
+    document.querySelectorAll('.app.source').forEach(function (n) { n.classList.remove('source'); });
+    var n = document.querySelector('.app[data-key="' + cle + '"]');
+    if (n) n.classList.add('source');
+  }
+  function ouvrir(cle, kind) {
+    if (kind === 'dossier') return ouvrirDossier(cle);
+    var app = appDe(cle);
+    if (app && app.href) window.open(app.href, '_blank', 'noopener');
+  }
+
+  function reordonnerAvant(cle) {
+    if (!geste) return;
+    var id = geste.id;
+    retirer(id);
+    var k = etat.grille.indexOf(cle);
+    if (k < 0) etat.grille.push(id); else etat.grille.splice(k, 0, id);
+    nettoyer(); sauver(); rendreAvecAnimation(); marquer(id);
+  }
+  function combiner(cle) {
+    if (!geste) return;
+    var id = geste.id;
+    geste.hover = null;
+    retirer(id);
+    if (estDossierKey(cle)) {
+      var d = trouverDossier(cle);
+      if (d) d.apps.push(id); else etat.grille.push(id);
+    } else {
+      var idx = etat.grille.indexOf(cle);
+      if (idx < 0) etat.grille.push(id);
+      else { var nid = nouvelId(); dossierNeuf = nid; etat.grille[idx] = { type: 'dossier', id: nid, nom: 'Dossier', apps: [cle, id] }; }
+    }
+    nettoyer(); sauver(); rendreAvecAnimation(); marquer(id);
+  }
+
+  document.addEventListener('pointerdown', function (e) {
+    var t = e.target.closest && e.target.closest('.app');
+    if (!t || !t.dataset.key) return;
+    geste = { id: t.dataset.key, kind: t.dataset.kind, dans: t.dataset.dans || null, x0: e.clientX, y0: e.clientY, glisse: false, pointer: e.pointerId, el: t, hover: null, timer: null };
+  });
+  document.addEventListener('pointermove', function (e) {
+    if (!geste || e.pointerId !== geste.pointer) return;
+    if (!geste.glisse) {
+      if (Math.hypot(e.clientX - geste.x0, e.clientY - geste.y0) < MIN) return;
+      geste.glisse = true;
+      fantome = geste.el.cloneNode(true);
+      fantome.className = 'fantome app';
+      fantome.style.width = geste.el.offsetWidth + 'px';
+      document.body.appendChild(fantome);
+      marquer(geste.id);
+    }
+    e.preventDefault();
+    placer(e.clientX, e.clientY);
+
+    // Lâcher une app hors du dossier : elle sort et revient sur l'accueil.
+    if (geste.dans && dossierOuvert && !dansDossier(e.clientX, e.clientY)) {
+      retirer(geste.id); geste.dans = null;
+      etat.grille.push(geste.id);
+      nettoyer(); sauver(); fermerDossier(); rendreAvecAnimation(); marquer(geste.id);
+      return;
+    }
+    var sous = document.elementFromPoint(e.clientX, e.clientY);
+    if (!sous) return;
+
+    // Réordonner à l'intérieur du dossier ouvert.
+    if (geste.dans) {
+      var c = sous.closest('#grille-dossier .app[data-key]');
+      if (c && c.dataset.key !== geste.id && centreDans(c, e.clientX, e.clientY, .45)) {
+        var d = trouverDossier(geste.dans), j = d.apps.indexOf(c.dataset.key);
+        d.apps.splice(d.apps.indexOf(geste.id), 1);
+        d.apps.splice(j, 0, geste.id);
+        sauver(); rendreDossier(); marquer(geste.id);
+      }
+      return;
+    }
+
+    var cible = sous.closest('#grille .app[data-key]');
+    var cle = cible ? cible.dataset.key : null;
+    if (!cible || cle === geste.id || !centreDans(cible, e.clientX, e.clientY, .3)) {
+      // On annule le survol seulement si le doigt s'est vraiment éloigné
+      // (la case peut bouger quand une app est réordonnée).
+      if (geste.hover && Math.hypot(e.clientX - geste.hoverX, e.clientY - geste.hoverY) > 40) {
+        clearTimeout(geste.timer); geste.hover = null;
+      }
+      return;
+    }
+    var dragueApp = !estDossierKey(geste.id), cibleEstDossier = estDossierKey(cle);
+    if (geste.hover === cle) return;
+    // Nouvelle case survolée : on prend sa place (réordonner), puis rester dessus crée le dossier.
+    clearTimeout(geste.timer);
+    geste.hover = cle; geste.hoverX = e.clientX; geste.hoverY = e.clientY;
+    if (!(dragueApp && cibleEstDossier)) reordonnerAvant(cle);
+    if (dragueApp) {
+      geste.timer = setTimeout(function () {
+        if (geste && geste.hover === cle) combiner(cle);
+      }, 380);
+    }
+  }, { passive: false });
+
+  function finGeste(e) {
+    if (!geste || e.pointerId !== geste.pointer) return;
+    var g = geste; geste = null;
+    if (fantome) { fantome.remove(); fantome = null; }
+    document.querySelectorAll('.app.source').forEach(function (n) { n.classList.remove('source'); });
+    if (!g.glisse) ouvrir(g.id, g.kind);
+  }
+  document.addEventListener('pointerup', finGeste);
+  document.addEventListener('pointercancel', function () {
+    geste = null; if (fantome) { fantome.remove(); fantome = null; } rendre();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    if (e.target === titreDossier) return;
+    var t = e.target.closest && e.target.closest('.app[data-key]');
+    if (!t) return;
+    e.preventDefault(); ouvrir(t.dataset.key, t.dataset.kind);
+  });
+
+  // ---- Navigation par pages ----
+  var pages = document.getElementById('pages');
+  document.getElementById('ouvrir-store').addEventListener('click', function () { allerA('store'); });
+  var ongletApps = document.getElementById('onglet-apps'), ongletStore = document.getElementById('onglet-store');
+  function allerA(page) {
+    var cible = document.getElementById('page-' + page);
+    pages.scrollTo({ left: cible.offsetLeft, behavior: 'smooth' });
+  }
+  function surChangementPage() {
+    var store = pages.scrollLeft > pages.clientWidth / 2;
+    if (store && !storeAffiche) {
+      document.querySelectorAll('#page-store .store-ligne').forEach(function (n, i) {
+        anime(n, [{ opacity: 0, transform: 'translateY(14px)' }, { opacity: 1, transform: 'none' }], { duration: 320, delay: i * 45, easing: SOUPLE, fill: 'backwards' });
+      });
+    }
+    storeAffiche = store;
+    ongletApps.setAttribute('aria-selected', String(!store));
+    ongletStore.setAttribute('aria-selected', String(store));
+  }
+  pages.addEventListener('scroll', surChangementPage, { passive: true });
+  ongletApps.addEventListener('click', function () { allerA('apps'); });
+  ongletStore.addEventListener('click', function () { allerA('store'); });
+
+  // ---- Fonds d'écran ----
+  function appliquerFond() {
+    flashFond();
+    var f = FONDS.filter(function (x) { return x.id === reglages.fond; })[0];
+    if (reglages.fond === 'perso' && reglages.fondPerso) {
+      document.documentElement.style.setProperty('--fond-bg', 'url("' + reglages.fondPerso + '") center / cover no-repeat, #000');
+    } else {
+      document.documentElement.style.setProperty('--fond-bg', (f || FONDS[0]).css);
+    }
+    var boutons = document.querySelectorAll('.fond');
+    boutons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.id === reglages.fond)); });
+  }
+  var fondsDiv = document.getElementById('fonds');
+  FONDS.forEach(function (f) {
+    var b = document.createElement('button'); b.type = 'button'; b.className = 'fond'; b.dataset.id = f.id;
+    var apercu = document.createElement('span'); apercu.style.background = f.css;
+    b.appendChild(apercu); b.appendChild(document.createTextNode(f.nom));
+    b.addEventListener('click', function () { reglages.fond = f.id; sauverReglages(); appliquerFond(); });
+    fondsDiv.appendChild(b);
+  });
+  document.getElementById('fichier-fond').addEventListener('change', function (e) {
+    var f = e.target.files && e.target.files[0];
+    if (!f) return;
+    var lecteur = new FileReader();
+    lecteur.onload = function () {
+      reglages.fond = 'perso';
+      reglages.fondPerso = lecteur.result;
+      sauverReglages(); appliquerFond();
+    };
+    lecteur.readAsDataURL(f);
+  });
+
+  // ---- Paramètres ----
+  var feuille = document.getElementById('feuille'), voile = document.getElementById('voile');
+  var interrupteur = document.getElementById('interrupteur-noms');
+  function ouvrirReglages() { voile.hidden = false; anime(voile, [{ opacity: 0 }, { opacity: 1 }], { duration: 200 }); afficher(feuille, 'translateY(100%)', 'translateY(0)'); }
+  function fermerReglages() { if (feuille.hidden) return; masquer(feuille, 'translateY(100%)', 'translateY(0)'); masquer(voile, '', ''); }
+  function sauverReglages() { ecrire(CLE_REGLAGES, reglages); }
+  function appliquerNoms() {
+    document.body.classList.toggle('sans-noms', !reglages.noms);
+    interrupteur.checked = !!reglages.noms;
+  }
+  interrupteur.addEventListener('change', function () { reglages.noms = interrupteur.checked; sauverReglages(); appliquerNoms(); });
+  document.getElementById('reinitialiser').addEventListener('click', function () {
+    etat = { grille: [] };
+    sauver(); rendre();
+  });
+  document.getElementById('onglet-reglages').addEventListener('click', ouvrirReglages);
+  document.getElementById('fermer').addEventListener('click', fermerReglages);
+  voile.addEventListener('click', fermerReglages);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { fermerReglages(); fermerDossier(); } });
+
+  // ---- Heure ----
+  function majHeure() {
+    var n = new Date();
+    document.getElementById('heure').textContent = String(n.getHours()).padStart(2, '0') + ':' + String(n.getMinutes()).padStart(2, '0');
+  }
+  majHeure(); setInterval(majHeure, 10000);
+
+  // ---- Démarrage ----
+  appliquerNoms(); appliquerFond(); animerEntree = etat.grille.length > 0; rendre(); fondPret = true; surChangementPage();
+})();
+</script>
+</body>
+</html>
