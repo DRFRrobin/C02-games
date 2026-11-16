@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>C02 Jeux</title>
+  <meta name="description" content="Les jeux de la C02 Team, à jouer directement dans le navigateur.">
+  <link rel="icon" href="assets/img/logo-c02.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600&family=Manrope:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header class="barre">
+    <a class="logo" href="https://c02.app/" aria-label="C02 — accueil">
+      <img src="assets/img/logo-c02.png" alt="C02" width="80" height="80">
+    </a>
+    <a class="pilule-noire" href="https://c02.app/">Retour sur C02.app</a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <span class="badge">Arcade C02</span>
+      <h1>Nos jeux</h1>
+      <p>Des jeux maison, à lancer en un clic sur PC ou téléphone.</p>
+    </section>
+
+    <p id="etat" class="etat" role="status">Chargement des jeux…</p>
+    <ul id="liste" class="grille"></ul>
+  </main>
+
+  <footer class="pied">
+    <span class="pied-logo">C02</span>
+    <span id="compteur"></span>
+    <a href="https://c02.app/">c02.app</a>
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

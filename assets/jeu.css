@@ -1,0 +1,53 @@
+/* Base commune aux pages de jeu hébergées ici (charte c02.app). Facultative. */
+:root {
+  --fond: #333033;
+  --fenetre: #2b292c;
+  --trait: #3c393e;
+  --rouge: #ff3333;
+  --rouge-clair: #ff4d4d;
+  --gris: #a09d9f;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--fond);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  line-height: 1.5;
+}
+.retour {
+  display: inline-block;
+  margin: 16px;
+  color: var(--gris);
+  text-decoration: none;
+  font-weight: 500;
+}
+.retour:hover { color: var(--rouge); }
+.scene {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 8px 16px 48px;
+  text-align: center;
+}
+.scene h1 {
+  margin: 0 0 4px;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: 2.4rem;
+  color: var(--rouge);
+}
+.aide { margin: 0 0 20px; color: var(--rouge-clair); }
+.bouton {
+  font: inherit;
+  font-weight: 500;
+  padding: 11px 28px;
+  color: #fff;
+  background: var(--rouge);
+  border: 0;
+  border-radius: 30px;
+  box-shadow: 0 4px 15px rgba(255, 51, 51, .3);
+  cursor: pointer;
+}
+.bouton:hover { background: #e60000; }
+.score { font-weight: 600; margin: 16px 0; }
