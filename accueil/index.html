@@ -13,7 +13,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
 <style>
 :root {
   --rouge: #ff3333; --texte: #ffffff; --doux: rgba(255,255,255,.72); --verre: rgba(255,255,255,.14);
@@ -146,9 +146,46 @@ body.fondu { animation: fondu .55s ease; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+/* Première ouverture : acceptation des conditions */
+.cgu { position: fixed; inset: 0; z-index: 100; background: #333033; color: var(--texte); display: flex; align-items: center; justify-content: center; padding: max(20px, env(safe-area-inset-top,0px)) max(20px, env(safe-area-inset-right,0px)) max(20px, env(safe-area-inset-bottom,0px)) max(20px, env(safe-area-inset-left,0px)); font-family: 'Inter', system-ui, sans-serif; overflow-y: auto; }
+.cgu-carte { width: min(100%, 440px); background: var(--feuille); border-radius: 24px; padding: 28px 24px; box-shadow: 0 20px 60px rgba(0,0,0,.5); text-align: center; }
+.cgu-carte h2 { margin: 0 0 10px; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 1.9rem; color: var(--rouge); }
+.cgu-carte p { margin: 0 0 14px; color: var(--doux); line-height: 1.5; }
+.cgu-carte a.lien { color: var(--rouge); }
+.cgu-boutons { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+.cgu-boutons button { font: inherit; font-weight: 600; font-size: 16px; border: 0; border-radius: 30px; padding: 14px 20px; cursor: pointer; color: var(--texte); }
+.cgu-accepter { background: var(--rouge); box-shadow: 0 10px 26px rgba(255,51,51,.35); }
+.cgu-refuser { background: var(--verre); }
+.cgu-ailleurs { display: none; margin-top: 18px; }
+.cgu-ailleurs ul { list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-direction: column; gap: 8px; }
+.cgu-ailleurs a { display: block; color: var(--texte); background: var(--verre); text-decoration: none; border-radius: 16px; padding: 12px 16px; font-weight: 500; }
+.cgu-ailleurs a:hover { background: rgba(255,255,255,.22); }
+.cgu-ailleurs .cgu-retour { background: none; border: 0; color: var(--doux); font: inherit; cursor: pointer; margin-top: 12px; text-decoration: underline; }
 </style>
 </head>
 <body>
+  <div class="cgu" id="cgu" role="dialog" aria-modal="true" aria-labelledby="cgu-titre">
+    <div class="cgu-carte">
+      <div id="cgu-principal">
+        <h2 id="cgu-titre">Bienvenue</h2>
+        <p>Avant d'utiliser l'écran d'accueil C02, merci de lire et d'accepter les <a class="lien" href="conditions.html" target="_blank" rel="noopener">conditions d'utilisation</a>.</p>
+        <div class="cgu-boutons">
+          <button class="cgu-accepter" id="cgu-accepter" type="button">J'accepte</button>
+          <button class="cgu-refuser" id="cgu-refuser" type="button">Je refuse</button>
+        </div>
+      </div>
+      <div class="cgu-ailleurs" id="cgu-ailleurs">
+        <h2>Pas de souci</h2>
+        <p>Sans acceptation, l'écran d'accueil reste fermé. Tu peux aller voir ailleurs sur internet :</p>
+        <ul>
+          <li><a href="https://fr.wikipedia.org/" rel="noopener">Wikipédia</a></li>
+          <li><a href="https://www.google.fr/" rel="noopener">Google</a></li>
+          <li><a href="https://www.youtube.com/" rel="noopener">YouTube</a></li>
+        </ul>
+        <button class="cgu-retour" id="cgu-retour" type="button">Changer d'avis</button>
+      </div>
+    </div>
+  </div>
   <div class="statut"><span id="heure">--:--</span></div>
 
   <div class="pages" id="pages">
@@ -675,6 +712,25 @@ body.fondu { animation: fondu .55s ease; }
     document.getElementById('heure').textContent = String(n.getHours()).padStart(2, '0') + ':' + String(n.getMinutes()).padStart(2, '0');
   }
   majHeure(); setInterval(majHeure, 10000);
+
+  // ---- Première ouverture : conditions d'utilisation ----
+  var CLE_CGU = 'c02-cgu-acceptees-v1';
+  var cguEl = document.getElementById('cgu');
+  function cguAcceptees() { try { return localStorage.getItem(CLE_CGU) === 'oui'; } catch (e) { return false; } }
+  function montrerCgu() { cguEl.hidden = false; }
+  if (cguAcceptees()) { cguEl.hidden = true; } else { montrerCgu(); }
+  document.getElementById('cgu-accepter').addEventListener('click', function () {
+    try { localStorage.setItem(CLE_CGU, 'oui'); } catch (e) {}
+    cguEl.hidden = true;
+  });
+  document.getElementById('cgu-refuser').addEventListener('click', function () {
+    document.getElementById('cgu-principal').hidden = true;
+    document.getElementById('cgu-ailleurs').style.display = 'block';
+  });
+  document.getElementById('cgu-retour').addEventListener('click', function () {
+    document.getElementById('cgu-principal').hidden = false;
+    document.getElementById('cgu-ailleurs').style.display = 'none';
+  });
 
   // ---- Démarrage ----
   appliquerNoms(); appliquerFond(); animerEntree = etat.grille.length > 0; rendre(); fondPret = true; surChangementPage();
