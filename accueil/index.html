@@ -353,7 +353,7 @@ input, textarea { -webkit-user-select: text; user-select: text; }
     etat.grille.forEach(function (x) {
       if (!estDossier(x)) { nouv.push(x); return; }
       if (x.apps.length === 0) return;
-      if (x.apps.length === 1) { nouv.push(x.apps[0]); return; }
+      if (x.apps.length === 1 && x.id !== 'f_jeux') { nouv.push(x.apps[0]); return; }
       nouv.push(x);
     });
     etat.grille = nouv;
@@ -505,8 +505,19 @@ input, textarea { -webkit-user-select: text; user-select: text; }
     document.getElementById('aucun').hidden = total > 0;
   }
   document.getElementById('recherche').addEventListener('input', rendreStore);
+  // Un jeu ajouté depuis le Store va dans le dossier Jeux ; une app reste sur l'accueil.
+  function ajouterSurAccueil(id) {
+    var app = appDe(id);
+    if (app && app.categorie === 'jeu') {
+      var d = trouverDossier('f_jeux');
+      if (d) d.apps.push(id);
+      else etat.grille.push({ type: 'dossier', id: 'f_jeux', nom: 'Jeux', apps: [id] });
+      return;
+    }
+    etat.grille.push(id);
+  }
   function basculer(id) {
-    if (surAccueil(id)) retirer(id); else { etat.grille.push(id); animerEntree = true; }
+    if (surAccueil(id)) retirer(id); else { ajouterSurAccueil(id); animerEntree = true; }
     nettoyer(); sauver(); rendre();
   }
 
