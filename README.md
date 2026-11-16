@@ -92,3 +92,12 @@ Les installations en version 1.1.0 ou plus ancienne ne reçoivent pas la mise à
 - **Adresse** : https://drfrrobin.github.io/C02-games/accueil/
 - **Fichier** : `accueil/index.html` (un seul fichier, aucune dépendance locale).
 - **Mise à jour** : chaque push sur `main` republie la page. La page WordPress d'accueil l'affiche en plein écran, donc les visiteurs voient la dernière version automatiquement.
+
+### Publier une nouvelle version de l'accueil
+
+Le numéro de version est écrit à trois endroits, qui doivent toujours concorder :
+- `accueil/index.html` : `APP_VERSION` ;
+- `accueil/version.json` : `version` ;
+- `accueil/sw.js` : `VERSION`.
+
+Change les trois, puis fusionne dans `main`. Les visiteurs reçoivent la mise à jour à leur prochaine ouverture (rechargement automatique), ou par un bandeau s'il n'est pas possible de recharger tout de suite.

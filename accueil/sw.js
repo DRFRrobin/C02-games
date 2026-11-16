@@ -1,5 +1,6 @@
 // Cache minimal : la page d'accueil fonctionne aussi hors ligne une fois ouverte.
-const CACHE = 'c02-accueil-v1';
+const VERSION = '1.1.0';
+const CACHE = 'c02-accueil-v' + VERSION;
 const FICHIERS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
@@ -10,6 +11,8 @@ self.addEventListener('activate', (e) => {
 });
 self.addEventListener('fetch', (e) => {
   if (e.request.method !== 'GET') return;
+  // La version publiée n'est jamais mise en cache : elle doit toujours être la vraie.
+  if (new URL(e.request.url).pathname.endsWith('/version.json')) return;
   // Réseau d'abord (toujours la dernière version), cache en secours.
   e.respondWith(
     fetch(e.request).then((rep) => {
