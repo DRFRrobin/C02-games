@@ -695,12 +695,14 @@ input, textarea { -webkit-user-select: text; user-select: text; }
   function finGeste(e) {
     if (!geste || e.pointerId !== geste.pointer) return;
     var g = geste; geste = null;
+    clearTimeout(g.timer);
     if (fantome) { fantome.remove(); fantome = null; }
     document.querySelectorAll('.app.source').forEach(function (n) { n.classList.remove('source'); });
     if (!g.glisse) ouvrir(g.id, g.kind);
   }
   document.addEventListener('pointerup', finGeste);
   document.addEventListener('pointercancel', function () {
+    if (geste) clearTimeout(geste.timer);
     geste = null; if (fantome) { fantome.remove(); fantome = null; } rendre();
   });
   document.addEventListener('keydown', function (e) {
@@ -759,9 +761,18 @@ input, textarea { -webkit-user-select: text; user-select: text; }
     if (!f) return;
     var lecteur = new FileReader();
     lecteur.onload = function () {
-      reglages.fond = 'perso';
-      reglages.fondPerso = lecteur.result;
-      sauverReglages(); appliquerFond();
+      var img = new Image();
+      img.onload = function () {
+        // Image réduite (1080 px max) pour tenir dans le stockage du navigateur.
+        var echelle = Math.min(1, 1080 / Math.max(img.width, img.height));
+        var c = document.createElement('canvas');
+        c.width = Math.round(img.width * echelle); c.height = Math.round(img.height * echelle);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        reglages.fond = 'perso';
+        reglages.fondPerso = c.toDataURL('image/jpeg', 0.85);
+        sauverReglages(); appliquerFond();
+      };
+      img.src = lecteur.result;
     };
     lecteur.readAsDataURL(f);
   });
