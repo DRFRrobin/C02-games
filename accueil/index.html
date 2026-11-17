@@ -213,7 +213,6 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       <span id="jeu-titre"></span>
       <span style="width:58px"></span>
     </div>
-    <iframe class="jeu-cadre" id="jeu-cadre" title="Jeu" allow="fullscreen; clipboard-write"></iframe>
   </section>
   <div class="maj-bandeau" id="maj-bandeau" role="status" hidden>
     <p>Une nouvelle version est disponible.</p>
@@ -625,13 +624,27 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     }
     ouvrirLien(web);
   }
+  // Chaque jeu garde son cadre chargé : fermer le jeu le masque sans le détruire,
+  // donc la partie et les données en mémoire sont retrouvées à la réouverture.
+  var cadresJeux = {};
   function ouvrirJeu(app) {
+    var zone = document.getElementById('jeu-plein');
+    fermerDossier();
     document.getElementById('jeu-titre').textContent = app.nom;
-    document.getElementById('jeu-cadre').src = app.href;
-    document.getElementById('jeu-plein').hidden = false;
+    Object.keys(cadresJeux).forEach(function (k) { cadresJeux[k].style.display = 'none'; });
+    var f = cadresJeux[app.id];
+    if (!f) {
+      f = document.createElement('iframe');
+      f.className = 'jeu-cadre'; f.title = app.nom;
+      f.setAttribute('allow', 'fullscreen; clipboard-write');
+      f.src = app.href;
+      zone.appendChild(f);
+      cadresJeux[app.id] = f;
+    }
+    f.style.display = 'block';
+    zone.hidden = false;
   }
   function fermerJeu() {
-    document.getElementById('jeu-cadre').src = 'about:blank';
     document.getElementById('jeu-plein').hidden = true;
   }
   document.getElementById('jeu-fermer').addEventListener('click', fermerJeu);
