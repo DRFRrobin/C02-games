@@ -255,6 +255,7 @@ body.theme-noel {
   --fond-bg:
     radial-gradient(130% 20% at 12% 104%, #f4f8ff 0 62%, transparent 63%),
     radial-gradient(140% 18% at 88% 108%, #dbe8f8 0 60%, transparent 61%),
+    radial-gradient(circle at 86% 21%, #fffbe6 0 13px, rgba(255,247,200,.38) 14px, rgba(255,247,200,.12) 34px, transparent 78px),
     radial-gradient(1.6px 1.6px at 12% 12%, #fff 50%, transparent 54%), radial-gradient(1.2px 1.2px at 27% 22%, #fff 50%, transparent 54%),
     radial-gradient(1.8px 1.8px at 41% 9%, #fff 50%, transparent 54%), radial-gradient(1.2px 1.2px at 58% 18%, #fff 50%, transparent 54%),
     radial-gradient(1.6px 1.6px at 73% 8%, #fff 50%, transparent 54%), radial-gradient(1.2px 1.2px at 88% 24%, #fff 50%, transparent 54%),
@@ -283,6 +284,11 @@ body.theme-noel .recherche input { background: rgba(255,248,225,.12); border-col
 body.theme-noel .bouton:not(.non), body.theme-noel .bouton-store { background: linear-gradient(180deg, #ef5350, #c62828); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 8px 18px rgba(198,40,40,.5); }
 body.theme-noel .vide-icone { background: linear-gradient(160deg, #43a047, #1b5e20); box-shadow: inset 1.5px 1.5px 0 rgba(255,255,255,.4), 0 14px 28px rgba(27,94,32,.5); }
 body.theme-noel .vide h2, body.theme-noel .feuille h2 { color: var(--or); }
+.traineau { display: none; }
+body.theme-noel .traineau { display: block; position: fixed; left: 0; top: 0; width: min(64vw, 300px); z-index: 0; pointer-events: none; opacity: 0; filter: blur(1.3px); will-change: transform, opacity; }
+.traineau svg { display: block; width: 100%; height: auto; overflow: visible; }
+.traineau .traine { position: absolute; right: 99%; top: 46%; width: 55%; height: 9px; border-radius: 9px; background: linear-gradient(270deg, rgba(255,213,79,.85), rgba(255,213,79,0)); filter: blur(3px); }
+.traineau .nez { filter: drop-shadow(0 0 5px #ff3b3b) drop-shadow(0 0 10px #ff3b3b); }
 .neige { display: none; }
 body.theme-noel .neige { display: block; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 .guirlande { display: none; }
@@ -350,6 +356,21 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
 </style>
 </head>
 <body>
+  <div class="traineau" id="traineau" aria-hidden="true"><span class="traine"></span>
+    <svg viewBox="0 0 400 110">
+      <path d="M12 100 Q4 100 6 90 M12 100 H146 Q160 100 160 88" fill="none" stroke="#ffd54f" stroke-width="4" stroke-linecap="round"/>
+      <path d="M18 94 L26 64 H128 Q140 64 144 78 L140 94 Z" fill="#c62828"/><path d="M22 84 H138" stroke="#ffd54f" stroke-width="2"/>
+      <circle cx="38" cy="56" r="17" fill="#2e7d32"/><path d="M30 42 Q38 34 46 42" fill="none" stroke="#ffd54f" stroke-width="3"/>
+      <rect x="80" y="52" width="28" height="14" rx="5" fill="#d32f2f"/><circle cx="96" cy="44" r="8" fill="#f5cba7"/><ellipse cx="98" cy="50" rx="8" ry="5" fill="#fff"/>
+      <path d="M88 40 L98 21 L107 40 Z" fill="#d32f2f"/><rect x="87" y="38" width="21" height="4" rx="2" fill="#fff"/><circle cx="99" cy="20" r="4" fill="#fff"/>
+      <path d="M144 76 Q175 70 205 78" fill="none" stroke="#ffd54f" stroke-width="1.6"/>
+      <g fill="none" stroke="#8d5a3c" stroke-linecap="round">
+        <g id="renne1"><ellipse cx="226" cy="76" rx="20" ry="9" fill="#8d5a3c" stroke="none"/><path d="M236 72 L246 64" stroke-width="8"/><circle cx="249" cy="62" r="6.5" fill="#8d5a3c" stroke="none"/><path d="M249 56 L246 44 M246 50 L240 45 M250 56 L256 46 M254 50 L260 47" stroke="#6d4c41" stroke-width="2"/><path d="M236 82 L248 96 M240 84 L254 92 M214 82 L200 96 M218 84 L208 98" stroke-width="3"/><path d="M206 74 Q198 70 200 64" stroke-width="3"/></g>
+        <g transform="translate(60 0)"><ellipse cx="226" cy="76" rx="20" ry="9" fill="#8d5a3c" stroke="none"/><path d="M236 72 L246 64" stroke-width="8"/><circle cx="249" cy="62" r="6.5" fill="#8d5a3c" stroke="none"/><path d="M249 56 L246 44 M246 50 L240 45 M250 56 L256 46 M254 50 L260 47" stroke="#6d4c41" stroke-width="2"/><path d="M236 82 L248 96 M240 84 L254 92 M214 82 L200 96 M218 84 L208 98" stroke-width="3"/><path d="M206 74 Q198 70 200 64" stroke-width="3"/></g>
+        <g transform="translate(120 0)"><ellipse cx="226" cy="76" rx="20" ry="9" fill="#8d5a3c" stroke="none"/><path d="M236 72 L246 64" stroke-width="8"/><circle cx="249" cy="62" r="6.5" fill="#8d5a3c" stroke="none"/><path d="M249 56 L246 44 M246 50 L240 45 M250 56 L256 46 M254 50 L260 47" stroke="#6d4c41" stroke-width="2"/><path d="M236 82 L248 96 M240 84 L254 92 M214 82 L200 96 M218 84 L208 98" stroke-width="3"/><path d="M206 74 Q198 70 200 64" stroke-width="3"/><circle class="nez" cx="255" cy="64" r="2.8" fill="#ff3b3b" stroke="none"/></g>
+      </g>
+      <path d="M240 74 H278 M300 74 H338" stroke="#ffd54f" stroke-width="1.4" fill="none"/>
+    </svg></div>
   <canvas class="neige" id="neige" aria-hidden="true"></canvas>
   <svg class="guirlande" id="guirlande" aria-hidden="true"></svg>
   <div class="demarrage" id="demarrage" aria-hidden="true">
@@ -1345,9 +1366,20 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
       flocons.push({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: .8 + prof * 2.6, v: .25 + prof * 1.1, a: .35 + prof * .6, ph: Math.random() * 6.28, f: .4 + Math.random() * .8 });
     }
   }
+  var ETOILES = [[.09, .1], [.22, .2], [.34, .07], [.47, .17], [.6, .1], [.71, .24], [.92, .09], [.15, .31], [.55, .31], [.79, .33], [.4, .26], [.96, .22]];
+  function dessinerEtoiles(t, k) {
+    ETOILES.forEach(function (e, i) {
+      var x = e[0] * window.innerWidth * k, y = e[1] * window.innerHeight * k, a = .35 + .65 * Math.abs(Math.sin(t / 900 + i * 1.7)), r = (2 + (i % 3)) * k;
+      neigeCtx.globalAlpha = a; neigeCtx.fillStyle = '#fffbe6';
+      neigeCtx.beginPath(); neigeCtx.moveTo(x, y - r * 2); neigeCtx.lineTo(x + r * .35, y - r * .35); neigeCtx.lineTo(x + r * 2, y); neigeCtx.lineTo(x + r * .35, y + r * .35);
+      neigeCtx.lineTo(x, y + r * 2); neigeCtx.lineTo(x - r * .35, y + r * .35); neigeCtx.lineTo(x - r * 2, y); neigeCtx.lineTo(x - r * .35, y - r * .35); neigeCtx.closePath(); neigeCtx.fill();
+    });
+    neigeCtx.globalAlpha = 1;
+  }
   function dessinerNeige(t) {
     var w = neigeCv.width, h = neigeCv.height, k = neigeCv.width / window.innerWidth;
     neigeCtx.clearRect(0, 0, w, h);
+    dessinerEtoiles(t, k);
     var vent = incX * 1.2;
     flocons.forEach(function (f) {
       f.y += f.v; f.x += Math.sin(t / 1100 * f.f + f.ph) * .45 + vent * f.r * .35;
@@ -1390,16 +1422,44 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
     if (j > 0 && j <= 60) return ' · J-' + j;
     return '';
   }
+
+  // Le Père Noël passe de temps en temps en traîneau, un peu flou, loin dans le ciel.
+  var traineauEl = document.getElementById('traineau'), traineauTimer = 0, traineauAnim = null;
+  function planifierTraineau(delai) {
+    clearTimeout(traineauTimer);
+    traineauTimer = setTimeout(lancerTraineau, delai != null ? delai : 25000 + Math.random() * 25000);
+  }
+  function lancerTraineau() {
+    if (!enNoel()) return;
+    var reduit = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (document.hidden || reduit || !traineauEl.animate) return planifierTraineau(15000);
+    var vw = window.innerWidth, vh = window.innerHeight, w = traineauEl.offsetWidth;
+    var sens = Math.random() < .5 ? 1 : -1, y = vh * (.3 + Math.random() * .22), dur = 10000 + Math.random() * 3500;
+    var x0 = sens > 0 ? -w * 1.4 : vw + w * .4, x1 = sens > 0 ? vw + w * .4 : -w * 1.4;
+    var flip = sens > 0 ? '' : ' scaleX(-1)';
+    function img(x, dy, rot) { return { transform: 'translate(' + x + 'px,' + (y + dy) + 'px) rotate(' + rot + 'deg)' + flip }; }
+    var a = img(x0, 34, 6), b = img(x0 + (x1 - x0) * .5, -30, -3), c = img(x1, 18, 5);
+    a.opacity = 0; b.opacity = .88; c.opacity = 0; a.offset = 0; b.offset = .5; c.offset = 1;
+    var a2 = img(x0 + (x1 - x0) * .08, 24, 4); a2.opacity = .88; a2.offset = .08;
+    var c2 = img(x0 + (x1 - x0) * .92, -6, -1); c2.opacity = .88; c2.offset = .92;
+    traineauEl.style.opacity = '';
+    traineauAnim = traineauEl.animate([a, a2, b, c2, c], { duration: dur, easing: 'linear', fill: 'forwards' });
+    traineauAnim.onfinish = function () { traineauAnim = null; traineauEl.style.opacity = '0'; planifierTraineau(); };
+  }
   function majNoel() {
     if (!neigeCtx) return;
     if (enNoel()) {
       document.body.style.setProperty('--noel-j', '"' + joursAvantNoel() + '"');
       tailleNeige(); creerFlocons(); construireGuirlande();
+      if (!traineauTimer) planifierTraineau(5000);
       if (!neigeBoucle) {
         if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) dessinerNeige(0);
         else neigeBoucle = requestAnimationFrame(boucleNeige);
       }
-    } else if (neigeBoucle) { cancelAnimationFrame(neigeBoucle); neigeBoucle = 0; }
+    } else {
+      if (neigeBoucle) { cancelAnimationFrame(neigeBoucle); neigeBoucle = 0; }
+      clearTimeout(traineauTimer); traineauTimer = 0; if (traineauAnim) { traineauAnim.cancel(); traineauAnim = null; }
+    }
   }
   window.addEventListener('resize', function () { if (enNoel()) { tailleNeige(); creerFlocons(); construireGuirlande(); } });
   document.addEventListener('visibilitychange', function () { if (enNoel() && !document.hidden && !neigeBoucle) neigeBoucle = requestAnimationFrame(boucleNeige); });
