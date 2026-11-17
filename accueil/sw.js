@@ -1,7 +1,7 @@
 // Cache minimal : la page d'accueil fonctionne aussi hors ligne une fois ouverte.
-const VERSION = '1.1.8';
+const VERSION = '1.2.0';
 const CACHE = 'c02-accueil-v' + VERSION;
-const FICHIERS = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
+const FICHIERS = ['./', './index.html', './conditions.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FICHIERS)).then(() => self.skipWaiting()));
@@ -19,6 +19,6 @@ self.addEventListener('fetch', (e) => {
       const copie = rep.clone();
       caches.open(CACHE).then((c) => c.put(e.request, copie));
       return rep;
-    }).catch(() => caches.match(e.request))
+    }).catch(() => caches.match(e.request, { ignoreSearch: true }).then((r) => r || (e.request.mode === 'navigate' ? caches.match('./index.html') : undefined)))
   );
 });
