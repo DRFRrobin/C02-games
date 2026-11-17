@@ -288,6 +288,13 @@ body.theme-noel .vide h2, body.theme-noel .feuille h2 { color: var(--or); }
 body.theme-noel .traineau { display: block; position: fixed; left: 0; top: 0; width: min(64vw, 300px); z-index: 0; pointer-events: none; opacity: 0; filter: blur(1.3px); will-change: transform, opacity; }
 .traineau svg { display: block; width: 100%; height: auto; overflow: visible; }
 .traineau .traine { position: absolute; right: 99%; top: 46%; width: 55%; height: 9px; border-radius: 9px; background: linear-gradient(270deg, rgba(255,213,79,.85), rgba(255,213,79,0)); filter: blur(3px); }
+.traineau .pa { transform-origin: 238px 82px; animation: galop .46s ease-in-out infinite alternate; }
+.traineau .pb { transform-origin: 216px 82px; animation: galop .46s ease-in-out infinite alternate-reverse; }
+.traineau .renne { animation: bondit .46s ease-in-out infinite alternate; }
+.traineau .r2, .traineau .r2 .pa, .traineau .r2 .pb { animation-delay: -.15s; }
+.traineau .r3, .traineau .r3 .pa, .traineau .r3 .pb { animation-delay: -.3s; }
+@keyframes galop { from { transform: rotate(-26deg); } to { transform: rotate(26deg); } }
+@keyframes bondit { from { transform: translateY(0); } to { transform: translateY(-3.5px); } }
 .traineau .nez { filter: drop-shadow(0 0 5px #ff3b3b) drop-shadow(0 0 10px #ff3b3b); }
 .neige { display: none; }
 body.theme-noel .neige { display: block; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
@@ -365,9 +372,9 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
       <path d="M88 40 L98 21 L107 40 Z" fill="#d32f2f"/><rect x="87" y="38" width="21" height="4" rx="2" fill="#fff"/><circle cx="99" cy="20" r="4" fill="#fff"/>
       <path d="M144 76 Q175 70 205 78" fill="none" stroke="#ffd54f" stroke-width="1.6"/>
       <g fill="none" stroke="#8d5a3c" stroke-linecap="round">
-        <g id="renne1"><ellipse cx="226" cy="76" rx="20" ry="9" fill="#8d5a3c" stroke="none"/><path d="M236 72 L246 64" stroke-width="8"/><circle cx="249" cy="62" r="6.5" fill="#8d5a3c" stroke="none"/><path d="M249 56 L246 44 M246 50 L240 45 M250 56 L256 46 M254 50 L260 47" stroke="#6d4c41" stroke-width="2"/><path d="M236 82 L248 96 M240 84 L254 92 M214 82 L200 96 M218 84 L208 98" stroke-width="3"/><path d="M206 74 Q198 70 200 64" stroke-width="3"/></g>
-        <g transform="translate(60 0)"><ellipse cx="226" cy="76" rx="20" ry="9" fill="#8d5a3c" stroke="none"/><path d="M236 72 L246 64" stroke-width="8"/><circle cx="249" cy="62" r="6.5" fill="#8d5a3c" stroke="none"/><path d="M249 56 L246 44 M246 50 L240 45 M250 56 L256 46 M254 50 L260 47" stroke="#6d4c41" stroke-width="2"/><path d="M236 82 L248 96 M240 84 L254 92 M214 82 L200 96 M218 84 L208 98" stroke-width="3"/><path d="M206 74 Q198 70 200 64" stroke-width="3"/></g>
-        <g transform="translate(120 0)"><ellipse cx="226" cy="76" rx="20" ry="9" fill="#8d5a3c" stroke="none"/><path d="M236 72 L246 64" stroke-width="8"/><circle cx="249" cy="62" r="6.5" fill="#8d5a3c" stroke="none"/><path d="M249 56 L246 44 M246 50 L240 45 M250 56 L256 46 M254 50 L260 47" stroke="#6d4c41" stroke-width="2"/><path d="M236 82 L248 96 M240 84 L254 92 M214 82 L200 96 M218 84 L208 98" stroke-width="3"/><path d="M206 74 Q198 70 200 64" stroke-width="3"/><circle class="nez" cx="255" cy="64" r="2.8" fill="#ff3b3b" stroke="none"/></g>
+        <g transform="translate(0 0)"><g class="renne r1"><g class="pb"><path d="M214 82 L200 96 M218 84 L208 98" stroke-width="3"/></g><g class="pa"><path d="M236 82 L248 96 M240 84 L254 92" stroke-width="3"/></g><ellipse cx="226" cy="76" rx="20" ry="9" fill="#8d5a3c" stroke="none"/><path d="M236 72 L246 64" stroke-width="8"/><circle cx="249" cy="62" r="6.5" fill="#8d5a3c" stroke="none"/><path d="M249 56 L246 44 M246 50 L240 45 M250 56 L256 46 M254 50 L260 47" stroke="#6d4c41" stroke-width="2"/><path d="M206 74 Q198 70 200 64" stroke-width="3"/></g></g>
+        <g transform="translate(60 0)"><g class="renne r2"><g class="pb"><path d="M214 82 L200 96 M218 84 L208 98" stroke-width="3"/></g><g class="pa"><path d="M236 82 L248 96 M240 84 L254 92" stroke-width="3"/></g><ellipse cx="226" cy="76" rx="20" ry="9" fill="#8d5a3c" stroke="none"/><path d="M236 72 L246 64" stroke-width="8"/><circle cx="249" cy="62" r="6.5" fill="#8d5a3c" stroke="none"/><path d="M249 56 L246 44 M246 50 L240 45 M250 56 L256 46 M254 50 L260 47" stroke="#6d4c41" stroke-width="2"/><path d="M206 74 Q198 70 200 64" stroke-width="3"/></g></g>
+        <g transform="translate(120 0)"><g class="renne r3"><g class="pb"><path d="M214 82 L200 96 M218 84 L208 98" stroke-width="3"/></g><g class="pa"><path d="M236 82 L248 96 M240 84 L254 92" stroke-width="3"/></g><ellipse cx="226" cy="76" rx="20" ry="9" fill="#8d5a3c" stroke="none"/><path d="M236 72 L246 64" stroke-width="8"/><circle cx="249" cy="62" r="6.5" fill="#8d5a3c" stroke="none"/><path d="M249 56 L246 44 M246 50 L240 45 M250 56 L256 46 M254 50 L260 47" stroke="#6d4c41" stroke-width="2"/><path d="M206 74 Q198 70 200 64" stroke-width="3"/><circle class="nez" cx="255" cy="64" r="2.8" fill="#ff3b3b" stroke="none"/></g></g>
       </g>
       <path d="M240 74 H278 M300 74 H338" stroke="#ffd54f" stroke-width="1.4" fill="none"/>
     </svg></div>
@@ -1437,13 +1444,12 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
     var sens = Math.random() < .5 ? 1 : -1, y = vh * (.3 + Math.random() * .22), dur = 10000 + Math.random() * 3500;
     var x0 = sens > 0 ? -w * 1.4 : vw + w * .4, x1 = sens > 0 ? vw + w * .4 : -w * 1.4;
     var flip = sens > 0 ? '' : ' scaleX(-1)';
-    function img(x, dy, rot) { return { transform: 'translate(' + x + 'px,' + (y + dy) + 'px) rotate(' + rot + 'deg)' + flip }; }
-    var a = img(x0, 34, 6), b = img(x0 + (x1 - x0) * .5, -30, -3), c = img(x1, 18, 5);
-    a.opacity = 0; b.opacity = .88; c.opacity = 0; a.offset = 0; b.offset = .5; c.offset = 1;
-    var a2 = img(x0 + (x1 - x0) * .08, 24, 4); a2.opacity = .88; a2.offset = .08;
-    var c2 = img(x0 + (x1 - x0) * .92, -6, -1); c2.opacity = .88; c2.offset = .92;
+    // Ligne droite, vitesse constante : seule l'opacité change au début et à la fin.
+    function img(x, o) { return { transform: 'translate(' + x + 'px,' + y + 'px)' + flip, opacity: o }; }
+    var etapes = [img(x0, 0), img(x0 + (x1 - x0) * .08, .88), img(x0 + (x1 - x0) * .92, .88), img(x1, 0)];
+    etapes[1].offset = .08; etapes[2].offset = .92;
     traineauEl.style.opacity = '';
-    traineauAnim = traineauEl.animate([a, a2, b, c2, c], { duration: dur, easing: 'linear', fill: 'forwards' });
+    traineauAnim = traineauEl.animate(etapes, { duration: dur, easing: 'linear', fill: 'forwards' });
     traineauAnim.onfinish = function () { traineauAnim = null; traineauEl.style.opacity = '0'; planifierTraineau(); };
   }
   function majNoel() {
