@@ -288,11 +288,11 @@ body.theme-noel .vide h2, body.theme-noel .feuille h2 { color: var(--or); }
 body.theme-noel .traineau { display: block; position: fixed; left: 0; top: 0; width: min(64vw, 300px); z-index: 0; pointer-events: none; opacity: 0; filter: blur(1.3px); will-change: transform, opacity; }
 .traineau svg { display: block; width: 100%; height: auto; overflow: visible; }
 .traineau .traine { position: absolute; right: 99%; top: 46%; width: 55%; height: 9px; border-radius: 9px; background: linear-gradient(270deg, rgba(255,213,79,.85), rgba(255,213,79,0)); filter: blur(3px); }
-.traineau .pa { transform-origin: 238px 82px; animation: galop .46s ease-in-out infinite alternate; }
-.traineau .pb { transform-origin: 216px 82px; animation: galop .46s ease-in-out infinite alternate-reverse; }
-.traineau .renne { animation: bondit .46s ease-in-out infinite alternate; }
-.traineau .r2, .traineau .r2 .pa, .traineau .r2 .pb { animation-delay: -.15s; }
-.traineau .r3, .traineau .r3 .pa, .traineau .r3 .pb { animation-delay: -.3s; }
+.traineau .pa { transform-origin: 238px 82px; animation: galop calc(.46s * var(--vit, 1)) ease-in-out infinite alternate; }
+.traineau .pb { transform-origin: 216px 82px; animation: galop calc(.46s * var(--vit, 1)) ease-in-out infinite alternate-reverse; }
+.traineau .renne { animation: bondit calc(.46s * var(--vit, 1)) ease-in-out infinite alternate; }
+.traineau .r2, .traineau .r2 .pa, .traineau .r2 .pb { animation-delay: calc(-.15s * var(--vit, 1)); }
+.traineau .r3, .traineau .r3 .pa, .traineau .r3 .pb { animation-delay: calc(-.3s * var(--vit, 1)); }
 @keyframes galop { from { transform: rotate(-26deg); } to { transform: rotate(26deg); } }
 @keyframes bondit { from { transform: translateY(0); } to { transform: translateY(-3.5px); } }
 .traineau .nez { filter: drop-shadow(0 0 5px #ff3b3b) drop-shadow(0 0 10px #ff3b3b); }
@@ -302,7 +302,7 @@ body.theme-noel .neige { display: block; position: fixed; inset: 0; width: 100%;
 body.theme-noel .guirlande { display: block; position: fixed; left: 0; right: 0; top: env(safe-area-inset-top, 0px); height: 58px; z-index: 4; pointer-events: none; overflow: visible; }
 .guirlande .fil { fill: none; stroke: #1f3d2c; stroke-width: 2.2; stroke-linecap: round; }
 .guirlande .culot { fill: #cdb26a; }
-.guirlande .lampe { animation: scintille 1.9s ease-in-out infinite; transform-box: fill-box; transform-origin: center top; }
+.guirlande .lampe { animation: scintille calc(1.9s * var(--vit, 1)) ease-in-out infinite; transform-box: fill-box; transform-origin: center top; }
 @keyframes scintille { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 5px currentColor) brightness(1.15); } 50% { opacity: .55; filter: drop-shadow(0 0 1px currentColor) brightness(.8); } }
 @media (prefers-reduced-motion: reduce) { .guirlande .lampe { animation: none; } }
 /* Thème clair */
@@ -1363,6 +1363,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
   // ---- Thème Noël : neige, guirlande, compte à rebours ----
   var neigeCv = document.getElementById('neige'), neigeCtx = neigeCv.getContext && neigeCv.getContext('2d');
   var flocons = [], neigeBoucle = 0, guirlandeSvg = document.getElementById('guirlande');
+  function vit() { var v = Number(reglages.vitesse); return v > 0 ? v : 1; } // curseur « Vitesse des animations »
   var COULEURS_NOEL = ['#ff3b3b', '#ffd54f', '#4caf50', '#42a5f5', '#ff7043'];
   function enNoel() { return document.body.classList.contains('theme-noel'); }
   function creerFlocons() {
@@ -1376,7 +1377,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
   var ETOILES = [[.09, .1], [.22, .2], [.34, .07], [.47, .17], [.6, .1], [.71, .24], [.92, .09], [.15, .31], [.55, .31], [.79, .33], [.4, .26], [.96, .22]];
   function dessinerEtoiles(t, k) {
     ETOILES.forEach(function (e, i) {
-      var x = e[0] * window.innerWidth * k, y = e[1] * window.innerHeight * k, a = .35 + .65 * Math.abs(Math.sin(t / 900 + i * 1.7)), r = (2 + (i % 3)) * k;
+      var x = e[0] * window.innerWidth * k, y = e[1] * window.innerHeight * k, a = .35 + .65 * Math.abs(Math.sin(t * vit() / 900 + i * 1.7)), r = (2 + (i % 3)) * k;
       neigeCtx.globalAlpha = a; neigeCtx.fillStyle = '#fffbe6';
       neigeCtx.beginPath(); neigeCtx.moveTo(x, y - r * 2); neigeCtx.lineTo(x + r * .35, y - r * .35); neigeCtx.lineTo(x + r * 2, y); neigeCtx.lineTo(x + r * .35, y + r * .35);
       neigeCtx.lineTo(x, y + r * 2); neigeCtx.lineTo(x - r * .35, y + r * .35); neigeCtx.lineTo(x - r * 2, y); neigeCtx.lineTo(x - r * .35, y - r * .35); neigeCtx.closePath(); neigeCtx.fill();
@@ -1389,7 +1390,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
     dessinerEtoiles(t, k);
     var vent = incX * 1.2;
     flocons.forEach(function (f) {
-      f.y += f.v; f.x += Math.sin(t / 1100 * f.f + f.ph) * .45 + vent * f.r * .35;
+      var sp = vit(); f.y += f.v * sp; f.x += (Math.sin(t / 1100 * f.f + f.ph) * .45 + vent * f.r * .35) * sp;
       if (f.y > window.innerHeight + 6) { f.y = -6; f.x = Math.random() * window.innerWidth; }
       if (f.x > window.innerWidth + 6) f.x = -6; if (f.x < -6) f.x = window.innerWidth + 6;
       neigeCtx.globalAlpha = f.a; neigeCtx.beginPath(); neigeCtx.arc(f.x * k, f.y * k, f.r * k, 0, 6.2832); neigeCtx.fillStyle = '#fff'; neigeCtx.fill();
@@ -1434,14 +1435,14 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
   var traineauEl = document.getElementById('traineau'), traineauTimer = 0, traineauAnim = null;
   function planifierTraineau(delai) {
     clearTimeout(traineauTimer);
-    traineauTimer = setTimeout(lancerTraineau, delai != null ? delai : 25000 + Math.random() * 25000);
+    traineauTimer = setTimeout(lancerTraineau, (delai != null ? delai : 25000 + Math.random() * 25000) / vit());
   }
   function lancerTraineau() {
     if (!enNoel()) return;
     var reduit = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (document.hidden || reduit || !traineauEl.animate) return planifierTraineau(15000);
     var vw = window.innerWidth, vh = window.innerHeight, w = traineauEl.offsetWidth;
-    var sens = Math.random() < .5 ? 1 : -1, y = vh * (.3 + Math.random() * .22), dur = 10000 + Math.random() * 3500;
+    var sens = Math.random() < .5 ? 1 : -1, y = vh * (.3 + Math.random() * .22), dur = (10000 + Math.random() * 3500) / vit();
     var x0 = sens > 0 ? -w * 1.4 : vw + w * .4, x1 = sens > 0 ? vw + w * .4 : -w * 1.4;
     var flip = sens > 0 ? '' : ' scaleX(-1)';
     // Ligne droite, vitesse constante : seule l'opacité change au début et à la fin.
