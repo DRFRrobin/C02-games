@@ -352,6 +352,27 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
 .d-anneau{overflow:visible}
 .d-anneau circle{fill:none;stroke:#ff3333;stroke-width:2.5;stroke-dasharray:100 100;stroke-dashoffset:100;animation:d-trace calc(.8s * var(--vit, 1)) cubic-bezier(.5,0,.2,1) calc(.1s * var(--vit, 1)) forwards}
 .d-onde{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,51,51,.7);opacity:0;animation:d-onde calc(.9s * var(--vit, 1)) ease-out calc(.6s * var(--vit, 1))}
+/* Écran de démarrage de Noël : couronne de houx, bonnet, neige, guirlande */
+.d-deco, .d-couronne, .d-bonnet { display: none; }
+.demarrage.noel { background: linear-gradient(180deg, #0a1b3d 0%, #0b3144 55%, #0b3b2a 100%); }
+.demarrage.noel::before { background: radial-gradient(60% 40% at 50% 45%, rgba(255,213,79,.22), rgba(255,213,79,0) 70%), radial-gradient(90% 40% at 90% 0%, rgba(229,57,53,.35), rgba(229,57,53,0) 65%); }
+.demarrage.noel .d-anneau, .demarrage.noel .d-onde { display: none; }
+.demarrage.noel .d-deco { display: block; position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.demarrage.noel .d-couronne { display: block; position: absolute; inset: -4px; width: calc(100% + 8px); height: calc(100% + 8px); overflow: visible; }
+.demarrage.noel .d-bonnet { display: block; position: absolute; left: 33px; top: -21px; width: 56px; height: auto; transform-origin: 10% 90%; opacity: 0; animation: d-bonnet calc(.62s * var(--vit, 1)) cubic-bezier(.3,1.6,.5,1) calc(.7s * var(--vit, 1)) forwards; filter: drop-shadow(0 3px 4px rgba(0,0,0,.4)); }
+.demarrage.noel .d-logo img { width: 66%; height: 66%; border-radius: 50%; background: #333033; box-shadow: 0 0 0 2.5px rgba(255,213,79,.55), 0 0 18px rgba(255,213,79,.3); }
+.d-couronne .f { transform-box: fill-box; transform-origin: center; opacity: 0; animation: d-feuille calc(.34s * var(--vit, 1)) ease-out forwards; }
+.d-couronne .b, .d-couronne .noeud { opacity: 0; animation: d-fondre calc(.3s * var(--vit, 1)) ease-out forwards; }
+.d-couronne .anneau-houx { fill: none; stroke: #1f6b2e; stroke-width: 5; stroke-dasharray: 100 100; stroke-dashoffset: 100; animation: d-trace calc(.7s * var(--vit, 1)) cubic-bezier(.5,0,.2,1) calc(.05s * var(--vit, 1)) forwards; }
+.d-flocon { position: absolute; top: -8px; border-radius: 50%; background: #fff; animation: d-chute linear infinite; }
+.d-lampe { position: absolute; top: 0; width: 9px; height: 13px; border-radius: 45% 45% 55% 55%; animation: d-lampe calc(.9s * var(--vit, 1)) ease-in-out infinite alternate; }
+.d-etincelle { position: absolute; width: 14px; height: 14px; opacity: 0; animation: d-etincelle calc(.9s * var(--vit, 1)) ease-in-out forwards; }
+@keyframes d-feuille { from { opacity: 0; transform: scale(.1); } to { opacity: 1; transform: scale(1); } }
+@keyframes d-fondre { from { opacity: 0; } to { opacity: 1; } }
+@keyframes d-bonnet { from { opacity: 0; transform: translateY(-46px) rotate(-34deg); } to { opacity: 1; transform: translateY(0) rotate(14deg); } }
+@keyframes d-chute { from { transform: translateY(0); } to { transform: translateY(110vh); } }
+@keyframes d-lampe { from { opacity: .45; filter: drop-shadow(0 0 1px currentColor); } to { opacity: 1; filter: drop-shadow(0 0 7px currentColor); } }
+@keyframes d-etincelle { 0% { opacity: 0; transform: scale(.2) rotate(0); } 45% { opacity: 1; transform: scale(1.1) rotate(45deg); } 100% { opacity: 0; transform: scale(.4) rotate(90deg); } }
 .demarrage.sortie{animation:d-sortie calc(.38s * var(--vit, 1)) ease-in forwards}
 @keyframes d-fond{to{opacity:1}}
 @keyframes d-trace{0%{stroke-dashoffset:100}85%{stroke-dashoffset:0}100%{stroke-dashoffset:0;stroke-dasharray:none}}
@@ -410,11 +431,14 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
   <canvas class="neige" id="neige" aria-hidden="true"></canvas>
   <svg class="guirlande" id="guirlande" aria-hidden="true"></svg>
   <div class="demarrage" id="demarrage" aria-hidden="true">
+    <div class="d-deco" id="d-deco"></div>
     <div class="d-centre">
       <div class="d-logo">
         <svg class="d-anneau" viewBox="0 0 96 96"><circle cx="48" cy="48" r="46" pathLength="100"/></svg>
         <span class="d-onde"></span>
+        <svg class="d-couronne" id="d-couronne" viewBox="0 0 96 96" aria-hidden="true"></svg>
         <img alt="" src="icon-192.png">
+        <svg class="d-bonnet" viewBox="0 0 60 52" aria-hidden="true"><path d="M5 46C8 16 26 4 46 9C41 21 52 32 57 43Z" fill="#d32f2f"/><path d="M10 40C16 24 28 14 42 12" fill="none" stroke="#ef5350" stroke-width="3" stroke-linecap="round" opacity=".7"/><rect x="2" y="40" width="57" height="11" rx="5.5" fill="#fff"/><circle cx="47" cy="9" r="7.5" fill="#fff"/></svg>
       </div>
     </div>
   </div>
@@ -424,8 +448,52 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
       var k = 1;
       try { var r = JSON.parse(localStorage.getItem('c02-accueil-reglages') || '{}'); if (r.vitesse > 0) k = 1 / r.vitesse; } catch (e) {}
       document.documentElement.style.setProperty('--vit', k);
-      setTimeout(function () { d.classList.add('sortie'); }, 1250 * k);
-      setTimeout(function () { d.remove(); }, 1650 * k);
+      var theme = null;
+      try { theme = localStorage.getItem('c02-accueil-theme'); } catch (e) {}
+      if (theme === 'noel') {
+        d.classList.add('noel');
+        var ns = 'http://www.w3.org/2000/svg', cou = document.getElementById('d-couronne'), deco = document.getElementById('d-deco');
+        function el(nom, attrs, parent) { var n = document.createElementNS(ns, nom); for (var a in attrs) n.setAttribute(a, attrs[a]); parent.appendChild(n); return n; }
+        el('circle', { cx: 48, cy: 48, r: 46, pathLength: 100, class: 'anneau-houx' }, cou);
+        for (var i = 0; i < 20; i++) {
+          var a = i / 20 * 6.2832, deg = a * 57.2958, x = 48 + 46 * Math.cos(a), y = 48 + 46 * Math.sin(a);
+          var g = el('g', { transform: 'translate(' + x.toFixed(1) + ' ' + y.toFixed(1) + ') rotate(' + (deg + 90 + (i % 2 ? 32 : -32)).toFixed(0) + ')' }, cou);
+          var f = el('ellipse', { cx: 0, cy: 0, rx: 8.5, ry: 3.4, fill: i % 2 ? '#2e9d44' : '#1c7a33', class: 'f' }, g);
+          f.style.animationDelay = (0.12 + i * 0.03).toFixed(2) + 's';
+        }
+        [[-50, 3], [28, 3], [150, 3]].forEach(function (c, n) {
+          for (var j = 0; j < c[1]; j++) {
+            var ang = (c[0] + j * 13) / 57.2958, bx = 48 + (46 - (j % 2) * 3) * Math.cos(ang), by = 48 + (46 - (j % 2) * 3) * Math.sin(ang);
+            var b = el('circle', { cx: bx.toFixed(1), cy: by.toFixed(1), r: 3.1, fill: '#e53935', class: 'b' }, cou);
+            b.style.animationDelay = (0.5 + n * 0.1 + j * 0.04).toFixed(2) + 's';
+          }
+        });
+        var nd = el('g', { class: 'noeud' }, cou); nd.style.animationDelay = '0.6s';
+        el('path', { d: 'M48 95 Q32 84 30 96 Q36 104 48 95Z', fill: '#d32f2f' }, nd); el('path', { d: 'M48 95 Q64 84 66 96 Q60 104 48 95Z', fill: '#d32f2f' }, nd);
+        el('path', { d: 'M46 97 L40 110 M50 97 L56 110', stroke: '#b71c1c', 'stroke-width': 4, 'stroke-linecap': 'round', fill: 'none' }, nd); el('circle', { cx: 48, cy: 96, r: 4, fill: '#ef5350' }, nd);
+        var cols = ['#ff3b3b', '#ffd54f', '#4caf50', '#42a5f5', '#ff7043'];
+        for (var l = 0; l < 11; l++) {
+          var lp = document.createElement('i'); lp.className = 'd-lampe'; lp.style.left = (4 + l * 9.2) + '%'; lp.style.top = (6 + Math.sin(l * 0.9) * 6) + 'px';
+          lp.style.background = cols[l % 5]; lp.style.color = cols[l % 5]; lp.style.animationDelay = (l * 0.11).toFixed(2) + 's'; deco.appendChild(lp);
+        }
+        var sd = 7;
+        function alea() { sd = (sd * 16807) % 2147483647; return sd / 2147483647; }
+        for (var s2 = 0; s2 < 34; s2++) {
+          var fl = document.createElement('i'), t = 2 + alea() * 3.5; fl.className = 'd-flocon';
+          fl.style.left = (alea() * 100) + '%'; fl.style.width = fl.style.height = (2 + alea() * 4) + 'px'; fl.style.opacity = .4 + alea() * .6;
+          fl.style.animationDuration = t.toFixed(1) + 's'; fl.style.animationDelay = (-alea() * t).toFixed(1) + 's'; deco.appendChild(fl);
+        }
+        for (var e2 = 0; e2 < 9; e2++) {
+          var an = e2 / 9 * 6.2832 + .4, ray = 64 + alea() * 26, st = document.createElementNS(ns, 'svg');
+          st.setAttribute('viewBox', '-7 -7 14 14'); st.setAttribute('class', 'd-etincelle');
+          st.style.left = 'calc(50% + ' + (Math.cos(an) * ray - 7).toFixed(0) + 'px)'; st.style.top = 'calc(50% - 20px + ' + (Math.sin(an) * ray - 7).toFixed(0) + 'px)';
+          st.style.animationDelay = (0.55 + alea() * 0.6).toFixed(2) + 's';
+          var pth = document.createElementNS(ns, 'path'); pth.setAttribute('d', 'M0 -7 L1.6 -1.6 L7 0 L1.6 1.6 L0 7 L-1.6 1.6 L-7 0 L-1.6 -1.6Z'); pth.setAttribute('fill', '#ffe58a'); st.appendChild(pth); deco.appendChild(st);
+        }
+      }
+      var noel = d.classList.contains('noel');
+      setTimeout(function () { d.classList.add('sortie'); }, (noel ? 1500 : 1250) * k);
+      setTimeout(function () { d.remove(); }, (noel ? 1900 : 1650) * k);
     })();
   </script>
   <section class="jeu-plein" id="jeu-plein" role="dialog" aria-modal="true" aria-label="Jeu" hidden>
@@ -1663,7 +1731,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.3.8';
+  var APP_VERSION = '1.3.9';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
