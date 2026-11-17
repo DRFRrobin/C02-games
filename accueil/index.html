@@ -589,7 +589,13 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       if (animerEntree) { n.classList.add('neuf'); n.style.setProperty('--d', (i * 55) + 'ms'); }
       tuiles.push(n);
     });
-    var cap = tuiles.length ? capacite() : 1, nb = Math.max(1, Math.ceil(tuiles.length / cap));
+    // On pose tout sur une seule page ; on ne la coupe que si ça déborde vraiment.
+    var unique = document.createElement('ul'); unique.className = 'grille';
+    tuiles.forEach(function (n) { unique.appendChild(n); });
+    g.appendChild(unique);
+    var deborde = g.scrollHeight > g.clientHeight + 2;
+    g.textContent = '';
+    var cap = (tuiles.length && deborde) ? capacite() : Math.max(1, tuiles.length), nb = Math.max(1, Math.ceil(tuiles.length / cap));
     for (var k = 0; k < nb; k++) {
       var ul = document.createElement('ul'); ul.className = 'grille';
       tuiles.slice(k * cap, (k + 1) * cap).forEach(function (n) { ul.appendChild(n); });
