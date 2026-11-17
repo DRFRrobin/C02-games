@@ -211,15 +211,11 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
 .d-anneau{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
 .d-anneau circle{fill:none;stroke:#ff3333;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:289;stroke-dashoffset:289;animation:d-trace .8s cubic-bezier(.5,0,.2,1) .1s forwards}
 .d-onde{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,51,51,.7);opacity:0;animation:d-onde .9s ease-out .6s}
-.d-nom{display:flex;gap:2px;font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:34px;letter-spacing:-.5px;color:#fff}
-.d-nom span{opacity:0;transform:translateY(14px);animation:d-lettre .5s cubic-bezier(.2,.8,.2,1) forwards}
-.d-nom span:nth-child(1){animation-delay:.55s}.d-nom span:nth-child(2){animation-delay:.62s;color:#ff3333}.d-nom span:nth-child(3){animation-delay:.69s}
 .demarrage.sortie{animation:d-sortie .38s ease-in forwards}
 @keyframes d-fond{to{opacity:1}}
 @keyframes d-trace{to{stroke-dashoffset:0}}
 @keyframes d-logo{to{opacity:1;transform:scale(1) rotate(0)}}
 @keyframes d-onde{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
-@keyframes d-lettre{to{opacity:1;transform:none}}
 @keyframes d-sortie{to{opacity:0;transform:scale(1.08)}}
 @media (prefers-reduced-motion:reduce){.demarrage *,.demarrage::before{animation-duration:.01s!important;animation-delay:0s!important}}
 /* Taille des icônes : réglable sur tablette et PC seulement */
@@ -241,7 +237,6 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
         <span class="d-onde"></span>
         <img alt="" src="icon-192.png">
       </div>
-      <div class="d-nom"><span>C</span><span>0</span><span>2</span></div>
     </div>
   </div>
   <script>
@@ -1003,7 +998,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.1.6';
+  var APP_VERSION = '1.1.7';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
