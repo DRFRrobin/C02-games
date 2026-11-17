@@ -248,6 +248,50 @@ body.theme-glass .lentille::after {
   filter: saturate(1.7) brightness(1.55); opacity: .6; clip-path: var(--l-clip, none);
 }
 @media (prefers-reduced-motion: reduce) { body.theme-glass .barre, body.theme-glass .store-ligne, body.theme-glass .vide { transition: none; } body.theme-glass .barre:active, body.theme-glass .store-ligne:active, body.theme-glass .vide:active { scale: 1; } }
+/* Thème Noël : nuit étoilée, collines enneigées, guirlande lumineuse, neige qui tombe */
+body.theme-noel {
+  --rouge: #e53935; --texte: #fff8e1; --doux: rgba(255,248,225,.74); --verre: rgba(255,248,225,.12);
+  --feuille: rgba(12,40,30,.94); --barre: rgba(14,48,36,.72); --trait: rgba(255,213,79,.28); --or: #ffd54f;
+  --fond-bg:
+    radial-gradient(130% 20% at 12% 104%, #f4f8ff 0 62%, transparent 63%),
+    radial-gradient(140% 18% at 88% 108%, #dbe8f8 0 60%, transparent 61%),
+    radial-gradient(1.6px 1.6px at 12% 12%, #fff 50%, transparent 54%), radial-gradient(1.2px 1.2px at 27% 22%, #fff 50%, transparent 54%),
+    radial-gradient(1.8px 1.8px at 41% 9%, #fff 50%, transparent 54%), radial-gradient(1.2px 1.2px at 58% 18%, #fff 50%, transparent 54%),
+    radial-gradient(1.6px 1.6px at 73% 8%, #fff 50%, transparent 54%), radial-gradient(1.2px 1.2px at 88% 24%, #fff 50%, transparent 54%),
+    radial-gradient(1.2px 1.2px at 19% 36%, #fff 50%, transparent 54%), radial-gradient(1.4px 1.4px at 66% 38%, #fff 50%, transparent 54%),
+    radial-gradient(70% 38% at 85% 0%, rgba(229,57,53,.38), transparent 68%),
+    radial-gradient(60% 40% at 5% 70%, rgba(255,213,79,.12), transparent 70%),
+    linear-gradient(180deg, #0a1b3d 0%, #0b3144 48%, #0b3b2a 100%);
+  color-scheme: dark;
+}
+body.theme-noel .page-titre::after { content: var(--noel-j, ""); color: var(--or); }
+body.theme-noel .titre { text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+body.theme-noel .statut { text-shadow: 0 1px 4px rgba(0,0,0,.85); }
+body.theme-noel .icone { box-shadow: inset 0 0 0 1.5px rgba(255,213,79,.55), 0 8px 16px rgba(0,0,0,.45); }
+body.theme-noel .grille-dossier { background: rgba(76,175,80,.28); box-shadow: inset 0 0 0 1.5px rgba(255,213,79,.45); }
+body.theme-noel .barre { box-shadow: inset 0 0 0 1px rgba(255,213,79,.4), 0 12px 30px rgba(0,0,0,.45); background: linear-gradient(180deg, rgba(20,66,48,.78), rgba(10,38,28,.82)); }
+body.theme-noel .barre::after {
+  content: ""; position: absolute; left: 12px; right: 12px; top: -9px; height: 24px; pointer-events: none; border-radius: 12px 12px 6px 6px;
+  background: radial-gradient(circle at 14% 12px, #fff 6px, transparent 7px), radial-gradient(circle at 33% 12px, #fff 9px, transparent 10px), radial-gradient(circle at 58% 12px, #fff 6px, transparent 7px), radial-gradient(circle at 79% 12px, #fff 8px, transparent 9px), radial-gradient(circle at 93% 12px, #fff 5px, transparent 6px), linear-gradient(#fff, #eef4ff) top / 100% 12px no-repeat;
+  filter: drop-shadow(0 2px 2px rgba(0,0,0,.3));
+}
+body.theme-noel .onglet-bulle { background: linear-gradient(180deg, #ef5350, #b71c1c); box-shadow: inset 0 1px 0 rgba(255,255,255,.45), 0 6px 14px rgba(183,28,28,.5); }
+body.theme-noel .onglet[aria-selected="true"] { color: #fff; }
+body.theme-noel .feuille, body.theme-noel .dossier, body.theme-noel .menu-ctx { box-shadow: inset 0 0 0 1px rgba(255,213,79,.32), 0 20px 50px rgba(0,0,0,.5); }
+body.theme-noel .store-ligne, body.theme-noel .vide { background: linear-gradient(160deg, rgba(30,92,64,.55), rgba(12,44,32,.55)); box-shadow: inset 0 0 0 1px rgba(255,213,79,.3); }
+body.theme-noel .recherche input { background: rgba(255,248,225,.12); border-color: rgba(255,213,79,.35); }
+body.theme-noel .bouton:not(.non), body.theme-noel .bouton-store { background: linear-gradient(180deg, #ef5350, #c62828); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 8px 18px rgba(198,40,40,.5); }
+body.theme-noel .vide-icone { background: linear-gradient(160deg, #43a047, #1b5e20); box-shadow: inset 1.5px 1.5px 0 rgba(255,255,255,.4), 0 14px 28px rgba(27,94,32,.5); }
+body.theme-noel .vide h2, body.theme-noel .feuille h2 { color: var(--or); }
+.neige { display: none; }
+body.theme-noel .neige { display: block; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+.guirlande { display: none; }
+body.theme-noel .guirlande { display: block; position: fixed; left: 0; right: 0; top: env(safe-area-inset-top, 0px); height: 58px; z-index: 4; pointer-events: none; overflow: visible; }
+.guirlande .fil { fill: none; stroke: #1f3d2c; stroke-width: 2.2; stroke-linecap: round; }
+.guirlande .culot { fill: #cdb26a; }
+.guirlande .lampe { animation: scintille 1.9s ease-in-out infinite; transform-box: fill-box; transform-origin: center top; }
+@keyframes scintille { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 5px currentColor) brightness(1.15); } 50% { opacity: .55; filter: drop-shadow(0 0 1px currentColor) brightness(.8); } }
+@media (prefers-reduced-motion: reduce) { .guirlande .lampe { animation: none; } }
 /* Thème clair */
 body.theme-clair { --texte: #1c1c1e; --doux: rgba(0,0,0,.6); --verre: rgba(0,0,0,.07); --feuille: #f2f2f7; --barre: rgba(255,255,255,.85); --trait: #d1d1d6; --fond-bg: radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.22) 0%, rgba(255,51,51,0) 60%), #f2f2f7; color-scheme: light; }
 body.theme-clair .titre, body.theme-clair .page-titre, body.theme-clair .store-section h2 { color: rgba(0,0,0,.6); }
@@ -306,6 +350,8 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
 </style>
 </head>
 <body>
+  <canvas class="neige" id="neige" aria-hidden="true"></canvas>
+  <svg class="guirlande" id="guirlande" aria-hidden="true"></svg>
   <div class="demarrage" id="demarrage" aria-hidden="true">
     <div class="d-centre">
       <div class="d-logo">
@@ -1196,6 +1242,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
   var THEMES = [
     { id: 'sombre', nom: 'C02 sombre', apercu: 'linear-gradient(160deg,#3a3a3e,#1f1e21)' },
     { id: 'glass', nom: 'Liquid Glass', apercu: 'linear-gradient(135deg,rgba(255,255,255,.45),rgba(255,255,255,.05)),radial-gradient(circle at 70% 20%,#ff3333,#1565c0)' },
+    { id: 'noel', nom: 'Noël', apercu: 'radial-gradient(70% 32% at 25% 108%,#f4f8ff 0 70%,transparent 72%),radial-gradient(60% 26% at 85% 110%,#dbe8f8 0 70%,transparent 72%),radial-gradient(circle at 80% 20%,rgba(229,57,53,.7),transparent 55%),linear-gradient(180deg,#0a1b3d,#0b3b2a)' },
     { id: 'clair', nom: 'Clair', apercu: 'linear-gradient(160deg,#ffffff,#e5e5ea)' }
   ];
   var theme = 'sombre';
@@ -1284,12 +1331,86 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
   interrupteurAnime.addEventListener('change', function () { reglages.fondAnime = interrupteurAnime.checked; sauverReglages(); appliquerEffets(); });
   interrupteurPar.addEventListener('change', function () { reglages.parallaxe = interrupteurPar.checked; sauverReglages(); appliquerEffets(); });
   appliquerEffets();
+
+  // ---- Thème Noël : neige, guirlande, compte à rebours ----
+  var neigeCv = document.getElementById('neige'), neigeCtx = neigeCv.getContext && neigeCv.getContext('2d');
+  var flocons = [], neigeBoucle = 0, guirlandeSvg = document.getElementById('guirlande');
+  var COULEURS_NOEL = ['#ff3b3b', '#ffd54f', '#4caf50', '#42a5f5', '#ff7043'];
+  function enNoel() { return document.body.classList.contains('theme-noel'); }
+  function creerFlocons() {
+    var n = Math.round(Math.min(110, Math.max(40, window.innerWidth * window.innerHeight / 9000)));
+    flocons = [];
+    for (var i = 0; i < n; i++) {
+      var prof = Math.random();
+      flocons.push({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: .8 + prof * 2.6, v: .25 + prof * 1.1, a: .35 + prof * .6, ph: Math.random() * 6.28, f: .4 + Math.random() * .8 });
+    }
+  }
+  function dessinerNeige(t) {
+    var w = neigeCv.width, h = neigeCv.height, k = neigeCv.width / window.innerWidth;
+    neigeCtx.clearRect(0, 0, w, h);
+    var vent = incX * 1.2;
+    flocons.forEach(function (f) {
+      f.y += f.v; f.x += Math.sin(t / 1100 * f.f + f.ph) * .45 + vent * f.r * .35;
+      if (f.y > window.innerHeight + 6) { f.y = -6; f.x = Math.random() * window.innerWidth; }
+      if (f.x > window.innerWidth + 6) f.x = -6; if (f.x < -6) f.x = window.innerWidth + 6;
+      neigeCtx.globalAlpha = f.a; neigeCtx.beginPath(); neigeCtx.arc(f.x * k, f.y * k, f.r * k, 0, 6.2832); neigeCtx.fillStyle = '#fff'; neigeCtx.fill();
+    });
+    neigeCtx.globalAlpha = 1;
+  }
+  function boucleNeige(t) {
+    neigeBoucle = 0;
+    if (!enNoel() || document.hidden) return;
+    dessinerNeige(t);
+    neigeBoucle = requestAnimationFrame(boucleNeige);
+  }
+  function tailleNeige() {
+    var k = Math.min(2, window.devicePixelRatio || 1);
+    neigeCv.width = Math.round(window.innerWidth * k); neigeCv.height = Math.round(window.innerHeight * k);
+  }
+  function construireGuirlande() {
+    var w = window.innerWidth, ns = 'http://www.w3.org/2000/svg', span = Math.max(150, Math.min(240, w / 3));
+    guirlandeSvg.setAttribute('viewBox', '0 0 ' + w + ' 58'); guirlandeSvg.setAttribute('preserveAspectRatio', 'none');
+    guirlandeSvg.textContent = '';
+    var d = 'M-10 4', x = -10, arcs = [];
+    while (x < w + 10) { var x2 = x + span; d += ' Q' + (x + span / 2) + ' 40 ' + x2 + ' 4'; arcs.push([x, x2]); x = x2; }
+    var fil = document.createElementNS(ns, 'path'); fil.setAttribute('d', d); fil.setAttribute('class', 'fil'); guirlandeSvg.appendChild(fil);
+    var mesure = fil, long = fil.getTotalLength(), n = Math.round(long / 36), i;
+    for (i = 1; i < n; i++) {
+      var pt = mesure.getPointAtLength(long * i / n), c = COULEURS_NOEL[i % COULEURS_NOEL.length];
+      var g = document.createElementNS(ns, 'g'); g.setAttribute('class', 'lampe'); g.style.color = c; g.style.animationDelay = ((i * 0.37) % 1.9).toFixed(2) + 's';
+      var cu = document.createElementNS(ns, 'rect'); cu.setAttribute('class', 'culot'); cu.setAttribute('x', pt.x - 2.6); cu.setAttribute('y', pt.y - 1); cu.setAttribute('width', 5.2); cu.setAttribute('height', 5); cu.setAttribute('rx', 1);
+      var ampoule = document.createElementNS(ns, 'path'); ampoule.setAttribute('d', 'M' + (pt.x - 4.4) + ' ' + (pt.y + 4) + ' Q' + (pt.x - 6.5) + ' ' + (pt.y + 14) + ' ' + pt.x + ' ' + (pt.y + 16) + ' Q' + (pt.x + 6.5) + ' ' + (pt.y + 14) + ' ' + (pt.x + 4.4) + ' ' + (pt.y + 4) + ' Z'); ampoule.setAttribute('fill', c);
+      g.appendChild(cu); g.appendChild(ampoule); guirlandeSvg.appendChild(g);
+    }
+  }
+  function joursAvantNoel() {
+    var m = new Date(), noel = new Date(m.getFullYear(), 11, 25);
+    var j = Math.ceil((noel - new Date(m.getFullYear(), m.getMonth(), m.getDate())) / 86400000);
+    if (j === 0) return ' · Joyeux Noël !';
+    if (j > 0 && j <= 60) return ' · J-' + j;
+    return '';
+  }
+  function majNoel() {
+    if (!neigeCtx) return;
+    if (enNoel()) {
+      document.body.style.setProperty('--noel-j', '"' + joursAvantNoel() + '"');
+      tailleNeige(); creerFlocons(); construireGuirlande();
+      if (!neigeBoucle) {
+        if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) dessinerNeige(0);
+        else neigeBoucle = requestAnimationFrame(boucleNeige);
+      }
+    } else if (neigeBoucle) { cancelAnimationFrame(neigeBoucle); neigeBoucle = 0; }
+  }
+  window.addEventListener('resize', function () { if (enNoel()) { tailleNeige(); creerFlocons(); construireGuirlande(); } });
+  document.addEventListener('visibilitychange', function () { if (enNoel() && !document.hidden && !neigeBoucle) neigeBoucle = requestAnimationFrame(boucleNeige); });
   function appliquerTheme() {
-    document.body.classList.remove('theme-glass', 'theme-clair');
+    document.body.classList.remove('theme-glass', 'theme-clair', 'theme-noel');
+    if (theme === 'noel') document.body.classList.add('theme-noel');
     if (theme === 'glass') document.body.classList.add('theme-glass');
     if (theme === 'clair') document.body.classList.add('theme-clair');
     document.querySelectorAll('.theme-btn').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.id === theme)); });
     majVerre();
+    majNoel();
   }
   var themesDiv = document.getElementById('themes');
   THEMES.forEach(function (th) {
