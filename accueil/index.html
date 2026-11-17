@@ -202,6 +202,26 @@ body.theme-clair .store-ligne { background: #ffffff; }
 body.theme-clair .dossier { background: #f2f2f7; }
 body.theme-clair .grille-dossier { background: rgba(0,0,0,.08); }
 body.theme-clair .dock { background: rgba(255,255,255,.7); }
+/* Écran de démarrage */
+.demarrage{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#333033;overflow:hidden}
+.demarrage::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 60% at 90% 0%,rgba(255,51,51,.42),rgba(255,51,51,0) 60%),radial-gradient(90% 50% at 0% 100%,rgba(255,51,51,.18),rgba(255,51,51,0) 60%);opacity:0;animation:d-fond .6s ease-out .05s forwards}
+.d-centre{position:relative;display:flex;flex-direction:column;align-items:center;gap:22px}
+.d-logo{position:relative;width:96px;height:96px;display:grid;place-items:center}
+.d-logo img{width:78%;height:78%;object-fit:contain;opacity:0;transform:scale(.4) rotate(-14deg);animation:d-logo .7s cubic-bezier(.2,1.3,.4,1) .15s forwards}
+.d-anneau{position:absolute;inset:0;width:100%;height:100%;transform:rotate(-90deg)}
+.d-anneau circle{fill:none;stroke:#ff3333;stroke-width:2.5;stroke-linecap:round;stroke-dasharray:289;stroke-dashoffset:289;animation:d-trace .8s cubic-bezier(.5,0,.2,1) .1s forwards}
+.d-onde{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(255,51,51,.7);opacity:0;animation:d-onde .9s ease-out .6s}
+.d-nom{display:flex;gap:2px;font-family:"Playfair Display",Georgia,serif;font-weight:600;font-size:34px;letter-spacing:-.5px;color:#fff}
+.d-nom span{opacity:0;transform:translateY(14px);animation:d-lettre .5s cubic-bezier(.2,.8,.2,1) forwards}
+.d-nom span:nth-child(1){animation-delay:.55s}.d-nom span:nth-child(2){animation-delay:.62s;color:#ff3333}.d-nom span:nth-child(3){animation-delay:.69s}
+.demarrage.sortie{animation:d-sortie .38s ease-in forwards}
+@keyframes d-fond{to{opacity:1}}
+@keyframes d-trace{to{stroke-dashoffset:0}}
+@keyframes d-logo{to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes d-onde{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
+@keyframes d-lettre{to{opacity:1;transform:none}}
+@keyframes d-sortie{to{opacity:0;transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){.demarrage *,.demarrage::before{animation-duration:.01s!important;animation-delay:0s!important}}
 /* Taille des icônes : réglable sur tablette et PC seulement */
 .pc-seul { display: none !important; }
 @media (min-width: 700px) {
@@ -214,6 +234,23 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
 </style>
 </head>
 <body>
+  <div class="demarrage" id="demarrage" aria-hidden="true">
+    <div class="d-centre">
+      <div class="d-logo">
+        <svg class="d-anneau" viewBox="0 0 96 96"><circle cx="48" cy="48" r="46"/></svg>
+        <span class="d-onde"></span>
+        <img alt="" src="icon-192.png">
+      </div>
+      <div class="d-nom"><span>C</span><span>0</span><span>2</span></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var d = document.getElementById('demarrage');
+      setTimeout(function () { d.classList.add('sortie'); }, 1250);
+      setTimeout(function () { d.remove(); }, 1650);
+    })();
+  </script>
   <section class="jeu-plein" id="jeu-plein" role="dialog" aria-modal="true" aria-label="Jeu" hidden>
     <div class="jeu-barre">
       <button type="button" id="jeu-fermer">Fermer</button>
@@ -966,7 +1003,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.1.5';
+  var APP_VERSION = '1.1.6';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
