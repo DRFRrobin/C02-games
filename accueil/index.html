@@ -256,6 +256,27 @@ body.theme-clair .store-ligne { background: #ffffff; }
 body.theme-clair .dossier { background: #f2f2f7; }
 body.theme-clair .grille-dossier { background: rgba(0,0,0,.08); }
 body.theme-clair .dock { background: rgba(255,255,255,.7); }
+/* Fond animé, parallaxe, mode édition, menu contextuel */
+body { --inc-x: 0; --inc-y: 0; }
+body::before { content: ""; position: fixed; inset: -34px; z-index: -1; pointer-events: none; background: var(--fond-bg) center / cover no-repeat; translate: calc(var(--inc-x) * -14px) calc(var(--inc-y) * -14px); transition: translate .25s ease-out; }
+body.fond-anime::before { animation: derive 26s ease-in-out infinite alternate; }
+@keyframes derive { from { transform: translate(0, 0) scale(1); } to { transform: translate(-18px, -12px) scale(1.08); } }
+body.sans-parallaxe::before { translate: none; }
+.grille { translate: calc(var(--inc-x) * 6px) calc(var(--inc-y) * 6px); transition: translate .25s ease-out; }
+body.sans-parallaxe .grille { translate: none; }
+@media (prefers-reduced-motion: reduce) { body::before, body.fond-anime::before { animation: none !important; translate: none; } .grille { translate: none; } }
+.app { position: relative; }
+.croix { display: none; position: absolute; top: -8px; left: calc(50% - min(var(--ico, 76px), 100%) / 2 - 8px); width: 26px; height: 26px; padding: 0; border-radius: 50%; border: 1px solid rgba(255,255,255,.35); background: rgba(30,30,34,.92); color: #fff; font: 600 17px/1 'Inter', system-ui, sans-serif; cursor: pointer; z-index: 3; place-items: center; }
+body.edition .croix { display: grid; }
+body.edition .app .icone { animation: tremble .28s ease-in-out infinite alternate; }
+body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse; animation-delay: -.11s; }
+@keyframes tremble { from { transform: rotate(-2.4deg); } to { transform: rotate(2.4deg); } }
+@media (prefers-reduced-motion: reduce) { body.edition .app .icone { animation: none; } }
+.fin-edition { position: fixed; top: calc(14px + env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); z-index: 20; font: inherit; font-weight: 600; font-size: 15px; color: #fff; background: var(--rouge); border: 0; border-radius: 22px; padding: 9px 20px; cursor: pointer; box-shadow: 0 8px 20px rgba(255,51,51,.4); }
+.menu-ctx { position: fixed; z-index: 95; min-width: 230px; max-width: 86vw; padding: 6px; border-radius: 18px; background: var(--feuille); -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%); box-shadow: 0 18px 44px rgba(0,0,0,.45); }
+.menu-ctx button { display: block; width: 100%; text-align: left; font: inherit; font-size: 15px; color: var(--texte); background: none; border: 0; border-radius: 12px; padding: 11px 14px; cursor: pointer; }
+.menu-ctx button:hover, .menu-ctx button:focus-visible { background: var(--verre); outline: none; }
+.menu-ctx button.danger { color: #ff6b6b; }
 /* Écran de démarrage */
 .demarrage{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#333033;overflow:hidden}
 .demarrage::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 60% at 90% 0%,rgba(255,51,51,.42),rgba(255,51,51,0) 60%),radial-gradient(90% 50% at 0% 100%,rgba(255,51,51,.18),rgba(255,51,51,0) 60%);opacity:0;animation:d-fond .6s ease-out .05s forwards}
@@ -308,6 +329,8 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       <span style="width:58px"></span>
     </div>
   </section>
+  <div class="menu-ctx" id="menu-ctx" role="menu" hidden></div>
+  <button class="fin-edition" id="fin-edition" type="button" hidden>OK</button>
   <div class="maj-bandeau" id="maj-bandeau" role="status" hidden>
     <p>Une nouvelle version est disponible.</p>
     <button type="button" id="maj-appliquer">Mettre à jour</button>
@@ -416,8 +439,16 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       <input type="checkbox" class="interrupteur" id="interrupteur-noms" aria-label="Afficher les noms">
     </div>
     <div class="ligne">
-      <p>Reflets au mouvement<small>Liquid Glass : le verre réagit à l'inclinaison du téléphone</small></p>
+      <p>Mouvement du téléphone<small>Reflets et parallaxe suivent l'inclinaison (autorisation demandée)</small></p>
       <input type="checkbox" class="interrupteur" id="interrupteur-mouv" aria-label="Reflets au mouvement">
+    </div>
+    <div class="ligne">
+      <p>Fond animé<small>Le fond d'écran dérive lentement</small></p>
+      <input type="checkbox" class="interrupteur" id="interrupteur-anime" aria-label="Fond animé">
+    </div>
+    <div class="ligne">
+      <p>Parallaxe<small>Le fond et les icônes bougent avec la souris ou l'inclinaison</small></p>
+      <input type="checkbox" class="interrupteur" id="interrupteur-parallaxe" aria-label="Parallaxe">
     </div>
     <div class="ligne pc-seul">
       <p>Taille des icônes<small>Tablette et ordinateur</small></p>
@@ -429,7 +460,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     </div>
     <div class="ligne"><p>Conditions d'utilisation<small>Ce que tu acceptes en utilisant le site</small></p><a class="bouton non" href="conditions.html" style="text-decoration:none">Lire</a></div>
     <div class="ligne">
-      <p>Mise à jour<small>Version <span id="version-app"></span></small></p>
+      <p>Mise à jour<small>Version <span id="version-app"></span> · <span id="date-version"></span></small></p>
       <button class="bouton non" id="chercher-maj" type="button">Rechercher</button>
     </div>
     <p class="note" id="msg-maj" hidden></p>
@@ -478,7 +509,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     return { grille: grille };
   }
   var etat = charger();
-  var reglages = Object.assign({ noms: true, fond: 'gris', fondPerso: null, tailleIcones: 76, mouvement: false }, lire(CLE_REGLAGES) || {});
+  var reglages = Object.assign({ noms: true, fond: 'gris', fondPerso: null, tailleIcones: 76, mouvement: false, fondAnime: true, parallaxe: true }, lire(CLE_REGLAGES) || {});
   function sauver() { ecrire(CLE_ORDRE, etat); }
 
   function trouverDossier(id) { return etat.grille.filter(function (x) { return estDossier(x) && x.id === id; })[0] || null; }
@@ -602,6 +633,10 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       nom.textContent = app.nom; a.setAttribute('aria-label', app.nom);
     }
     a.appendChild(ic); a.appendChild(nom);
+    if (!estDossier(x)) {
+      var cx = document.createElement('button'); cx.type = 'button'; cx.className = 'croix'; cx.textContent = '×';
+      cx.setAttribute('aria-label', 'Retirer ' + appDe(x).nom); a.appendChild(cx);
+    }
     return a;
   }
   var accueilEl = document.getElementById('grille'), pointsEl = document.getElementById('points');
@@ -795,8 +830,21 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   // Chaque jeu garde son cadre chargé : fermer le jeu le masque sans le détruire,
   // donc la partie et les données en mémoire sont retrouvées à la réouverture.
   var cadresJeux = {};
+  var jeuOuvertId = null;
+  // Position de l'icône d'une app sur l'accueil (ou de son dossier), pour animer l'ouverture depuis elle.
+  function rectIcone(id) {
+    var n = document.querySelector('#grille .app[data-key="' + id + '"] .icone');
+    if (!n) { var d = dossierContenant(id); if (d) n = document.querySelector('#grille .app[data-key="' + d.id + '"] .icone'); }
+    if (!n) return null;
+    var r = n.getBoundingClientRect();
+    return r.width ? r : null;
+  }
+  function decoupe(r) {
+    return 'inset(' + r.top + 'px ' + (window.innerWidth - r.right) + 'px ' + (window.innerHeight - r.bottom) + 'px ' + r.left + 'px round 22px)';
+  }
   function ouvrirJeu(app) {
     var zone = document.getElementById('jeu-plein');
+    var depuis = rectIcone(app.id);
     fermerDossierSansAnim();
     document.getElementById('jeu-titre').textContent = app.nom;
     Object.keys(cadresJeux).forEach(function (k) { cadresJeux[k].style.display = 'none'; });
@@ -810,10 +858,23 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       cadresJeux[app.id] = f;
     }
     f.style.display = 'block';
+    jeuOuvertId = app.id;
+    zone._tok = (zone._tok || 0) + 1;
+    zone.style.pointerEvents = '';
     zone.hidden = false;
+    // Le jeu grandit depuis son icône jusqu'à remplir l'écran.
+    if (depuis) anime(zone, [{ clipPath: decoupe(depuis), opacity: .5 }, { clipPath: 'inset(0px 0px 0px 0px round 0px)', opacity: 1 }], { duration: 440, easing: SOUPLE });
+    else afficher(zone, 'scale(.94)', 'none');
   }
   function fermerJeu() {
-    document.getElementById('jeu-plein').hidden = true;
+    var zone = document.getElementById('jeu-plein');
+    if (zone.hidden) return;
+    var vers = jeuOuvertId ? rectIcone(jeuOuvertId) : null;
+    zone._tok = (zone._tok || 0) + 1;
+    var mon = zone._tok;
+    zone.style.pointerEvents = 'none';
+    var a = vers ? anime(zone, [{ clipPath: 'inset(0px 0px 0px 0px round 0px)', opacity: 1 }, { clipPath: decoupe(vers), opacity: .4 }], { duration: 340, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' }) : null;
+    if (a) a.onfinish = function () { if (zone._tok === mon) zone.hidden = true; }; else zone.hidden = true;
   }
   document.getElementById('jeu-fermer').addEventListener('click', fermerJeu);
   // L'ouverture se fait au relâchement du doigt ; le « clic » qui suit tombe alors sur
@@ -828,16 +889,74 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     toastEl.textContent = txt; toastEl.hidden = false;
     clearTimeout(toastEl._t); toastEl._t = setTimeout(function () { toastEl.hidden = true; }, 2600);
   }
-  function ouvrir(cle, kind) {
+  function ouvrir(cle, kind, force) {
+    if (enEdition && !force) return;
     dernierOuvert = Date.now();
     if (kind === 'dossier') return ouvrirDossier(cle);
     var app = appDe(cle);
     if (!app || !app.href) return;
     if (navigator.onLine === false && !cadresJeux[app.id]) return toast('Hors ligne : cette app a besoin d’une connexion.');
-    if (app.native) return ouvrirNatif(app);
+    if (app.native) { rebondIcone(cle); return ouvrirNatif(app); }
     if (app.categorie === 'jeu' && app.cadre !== false) return ouvrirJeu(app);
+    rebondIcone(cle);
     ouvrirLien(app.href);
   }
+  function rebondIcone(cle) {
+    var n = document.querySelector('#grille .app[data-key="' + cle + '"] .icone, #grille-dossier .app[data-key="' + cle + '"] .icone');
+    if (n) anime(n, [{ transform: 'scale(1)' }, { transform: 'scale(1.2)', offset: .4 }, { transform: 'scale(1)' }], { duration: 360, easing: SOUPLE });
+  }
+
+
+  // ---- Retour haptique (Android) ----
+  function vibre(m) { try { if (navigator.vibrate) navigator.vibrate(m); } catch (e) {} }
+
+  // ---- Mode édition (les icônes tremblent, une croix permet de les retirer) ----
+  var enEdition = false, finEditionBtn = document.getElementById('fin-edition');
+  function entrerEdition() {
+    if (enEdition) return;
+    enEdition = true; document.body.classList.add('edition'); finEditionBtn.hidden = false; fermerMenu(); fermerDossier(); vibre(20);
+  }
+  function sortirEdition() {
+    if (!enEdition) return;
+    enEdition = false; document.body.classList.remove('edition'); finEditionBtn.hidden = true;
+  }
+  finEditionBtn.addEventListener('click', sortirEdition);
+
+  // ---- Menu (appui long sur téléphone, clic droit sur PC) ----
+  var menuEl = document.getElementById('menu-ctx'), menuOuvert = false, menuFermeA = 0;
+  function fermerMenu() { if (!menuOuvert) return; menuOuvert = false; menuFermeA = Date.now(); menuEl.hidden = true; }
+  function partager(app) {
+    if (navigator.share) { navigator.share({ title: app.nom, url: app.href }).catch(function () {}); return; }
+    try { navigator.clipboard.writeText(app.href).then(function () { toast('Lien copié.'); }, function () { toast(app.href); }); } catch (e) { toast(app.href); }
+  }
+  function ouvrirMenu(el, x, y) {
+    var cle = el.dataset.key, kind = el.dataset.kind, app = kind === 'dossier' ? null : appDe(cle);
+    menuEl.textContent = '';
+    function item(txt, fn, danger) {
+      var b = document.createElement('button'); b.type = 'button'; b.setAttribute('role', 'menuitem'); b.textContent = txt;
+      if (danger) b.className = 'danger';
+      b.addEventListener('click', function () { fermerMenu(); fn(); });
+      menuEl.appendChild(b);
+    }
+    item('Ouvrir', function () { ouvrir(cle, kind, true); });
+    if (app) item('Partager le lien', function () { partager(app); });
+    item('Modifier l’écran d’accueil', entrerEdition);
+    if (app) item('Retirer de l’accueil', function () { retirer(cle); nettoyer(); sauver(); rendre(); }, true);
+    menuEl.hidden = false; menuOuvert = true;
+    var w = menuEl.offsetWidth, h = menuEl.offsetHeight, vw = window.innerWidth, vh = window.innerHeight;
+    menuEl.style.left = Math.max(8, Math.min(x, vw - w - 8)) + 'px';
+    menuEl.style.top = (y + 8 + h > vh - 8 ? Math.max(8, y - h - 8) : y + 8) + 'px';
+    anime(menuEl, [{ opacity: 0, transform: 'scale(.92)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 180, easing: SOUPLE });
+    var premier = menuEl.querySelector('button'); if (premier && !('ontouchstart' in window)) premier.focus();
+  }
+  document.addEventListener('pointerdown', function (e) { if (menuOuvert && !menuEl.contains(e.target)) fermerMenu(); }, true);
+  document.addEventListener('contextmenu', function (e) {
+    var t = e.target.closest && e.target.closest('.app[data-key]');
+    if (t) { e.preventDefault(); if (menuOuvert) return; if (geste) clearTimeout(geste.menuTimer); ouvrirMenu(t, e.clientX, e.clientY); }
+    else if (e.target.closest && e.target.closest('#grille, #vide')) { e.preventDefault(); entrerEdition(); }
+  });
+  var fondTimer = null;
+  function annulerFond() { clearTimeout(fondTimer); fondTimer = null; }
 
   function reordonnerAvant(cle) {
     if (!geste) return;
@@ -861,19 +980,38 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       if (idx < 0) etat.grille.push(id);
       else { var nid = nouvelId(); dossierNeuf = nid; etat.grille[idx] = { type: 'dossier', id: nid, nom: 'Dossier', apps: [cle, id] }; }
     }
+    vibre([10, 30, 10]);
     nettoyer(); sauver(); rendreAvecAnimation(); marquer(id);
   }
 
   document.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    if (Date.now() - menuFermeA < 60) return;
+    var cr = e.target.closest && e.target.closest('.croix');
+    if (cr) {
+      var tt = cr.closest('.app');
+      if (tt && tt.dataset.key) { e.preventDefault(); retirer(tt.dataset.key); nettoyer(); sauver(); rendre(); vibre(12); }
+      return;
+    }
     var t = e.target.closest && e.target.closest('.app');
-    if (!t || !t.dataset.key) return;
-    geste = { id: t.dataset.key, kind: t.dataset.kind, dans: t.dataset.dans || null, x0: e.clientX, y0: e.clientY, glisse: false, pointer: e.pointerId, el: t, hover: null, timer: null };
+    if (!t || !t.dataset.key) {
+      if (!enEdition && e.target.closest && e.target.closest('#page-apps') && !e.target.closest('button, a, input, .points')) {
+        annulerFond(); fondTimer = setTimeout(entrerEdition, 650);
+      }
+      return;
+    }
+    geste = { id: t.dataset.key, kind: t.dataset.kind, dans: t.dataset.dans || null, x0: e.clientX, y0: e.clientY, glisse: false, pointer: e.pointerId, el: t, hover: null, timer: null, menu: false };
+    var gc = geste;
+    gc.menuTimer = setTimeout(function () {
+      if (geste === gc && !gc.glisse) { gc.menu = true; vibre(15); var r = gc.el.getBoundingClientRect(); ouvrirMenu(gc.el, r.left, r.bottom); }
+    }, 520);
   });
   document.addEventListener('pointermove', function (e) {
+    if (fondTimer && e.pointerType !== 'mouse') annulerFond();
     if (!geste || e.pointerId !== geste.pointer) return;
     if (!geste.glisse) {
       if (Math.hypot(e.clientX - geste.x0, e.clientY - geste.y0) < MIN) return;
-      geste.glisse = true;
+      geste.glisse = true; clearTimeout(geste.menuTimer); annulerFond();
       fantome = geste.el.cloneNode(true);
       fantome.className = 'fantome app';
       fantome.style.width = geste.el.offsetWidth + 'px';
@@ -941,14 +1079,16 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   function finGeste(e) {
     if (!geste || e.pointerId !== geste.pointer) return;
     var g = geste; geste = null;
-    clearTimeout(g.timer); clearTimeout(g.bordTimer);
+    clearTimeout(g.timer); clearTimeout(g.bordTimer); clearTimeout(g.menuTimer); annulerFond();
+    if (g.glisse) vibre(12);
     if (fantome) { fantome.remove(); fantome = null; }
     document.querySelectorAll('.app.source').forEach(function (n) { n.classList.remove('source'); });
-    if (!g.glisse) ouvrir(g.id, g.kind);
+    if (!g.glisse && !g.menu) ouvrir(g.id, g.kind);
   }
   document.addEventListener('pointerup', finGeste);
   document.addEventListener('pointercancel', function () {
-    if (geste) clearTimeout(geste.timer);
+    annulerFond();
+    if (geste) { clearTimeout(geste.timer); clearTimeout(geste.menuTimer); }
     geste = null; if (fantome) { fantome.remove(); fantome = null; } rendre();
   });
   document.addEventListener('keydown', function (e) {
@@ -983,6 +1123,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
         { left: b.l + 'px', width: b.w + 'px' }
       ], { duration: 460, easing: SOUPLE });
     }
+    if (animer && a && a.l !== b.l) vibre(8);
     bulleGeo = b;
   }
   window.addEventListener('resize', function () { placerBulle(false); });
@@ -1105,12 +1246,12 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     requestAnimationFrame(function () { incAtt = false; document.body.style.setProperty('--inc-x', incX.toFixed(3)); document.body.style.setProperty('--inc-y', incY.toFixed(3)); });
   }
   document.addEventListener('pointermove', function (e) {
-    if (!document.body.classList.contains('theme-glass') || e.pointerType === 'touch' || reglages.mouvement) return;
+    if (!(document.body.classList.contains('theme-glass') || reglages.parallaxe !== false) || e.pointerType === 'touch' || reglages.mouvement) return;
     incliner(e.clientX / window.innerWidth * 2 - 1, e.clientY / window.innerHeight * 2 - 1);
   });
   var mouvementActif = false;
   function surOrientation(e) {
-    if (e.gamma == null || !document.body.classList.contains('theme-glass')) return;
+    if (e.gamma == null || !(document.body.classList.contains('theme-glass') || reglages.parallaxe !== false)) return;
     incliner(e.gamma / 30, ((e.beta || 0) - 45) / 30);
   }
   function réglerMouvement() {
@@ -1132,6 +1273,16 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     } else appliquer(true);
   });
   réglerMouvement();
+  var interrupteurAnime = document.getElementById('interrupteur-anime'), interrupteurPar = document.getElementById('interrupteur-parallaxe');
+  function appliquerEffets() {
+    document.body.classList.toggle('fond-anime', reglages.fondAnime !== false);
+    document.body.classList.toggle('sans-parallaxe', reglages.parallaxe === false);
+    interrupteurAnime.checked = reglages.fondAnime !== false; interrupteurPar.checked = reglages.parallaxe !== false;
+    if (reglages.parallaxe === false && !document.body.classList.contains('theme-glass')) incliner(0, 0);
+  }
+  interrupteurAnime.addEventListener('change', function () { reglages.fondAnime = interrupteurAnime.checked; sauverReglages(); appliquerEffets(); });
+  interrupteurPar.addEventListener('change', function () { reglages.parallaxe = interrupteurPar.checked; sauverReglages(); appliquerEffets(); });
+  appliquerEffets();
   function appliquerTheme() {
     document.body.classList.remove('theme-glass', 'theme-clair');
     if (theme === 'glass') document.body.classList.add('theme-glass');
@@ -1205,7 +1356,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   document.getElementById('onglet-reglages').addEventListener('click', ouvrirReglages);
   document.getElementById('fermer').addEventListener('click', fermerReglages);
   voile.addEventListener('click', fermerReglages);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { fermerReglages(); fermerDossier(); fermerJeu(); } });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { fermerMenu(); sortirEdition(); fermerReglages(); fermerDossier(); fermerJeu(); } });
 
   // ---- Heure ----
   function majHeure() {
@@ -1234,10 +1385,17 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.3.2';
+  var APP_VERSION = '1.3.3';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
+  (function () {
+    var cle = 'c02-version-installee', info = null, auj = new Date().toISOString().slice(0, 10);
+    try { info = JSON.parse(localStorage.getItem(cle) || 'null'); } catch (e) {}
+    if (!info || info.v !== APP_VERSION) { info = { v: APP_VERSION, d: auj }; try { localStorage.setItem(cle, JSON.stringify(info)); } catch (e) {} }
+    var d = new Date(info.d + 'T12:00:00');
+    document.getElementById('date-version').textContent = 'installée le ' + d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+  })();
   function comparerVersions(a, b) {
     var x = String(a).split('.').map(Number), y = String(b).split('.').map(Number);
     for (var i = 0; i < 3; i++) { if ((x[i] || 0) > (y[i] || 0)) return 1; if ((x[i] || 0) < (y[i] || 0)) return -1; }
