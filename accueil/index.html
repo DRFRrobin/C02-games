@@ -101,7 +101,9 @@ body.sans-noms .nom { display: none; }
 }
 .onglet { flex: 1; font: inherit; font-size: 13px; font-weight: 500; color: var(--doux); background: none; border: 0; border-radius: 22px; padding: 10px 6px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; }
 .onglet svg { width: 22px; height: 22px; }
-.onglet[aria-selected="true"] { color: var(--texte); background: var(--verre); }
+.onglet { position: relative; z-index: 1; }
+.onglet[aria-selected="true"] { color: var(--texte); }
+.onglet-bulle { position: absolute; top: 8px; bottom: 8px; left: 0; width: 0; border-radius: 22px; background: var(--verre); pointer-events: none; z-index: 0; }
 
 /* Feuille Paramètres */
 .voile { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 60; }
@@ -205,9 +207,9 @@ body.theme-glass .store-ligne, body.theme-glass .vide, body.theme-glass .maj-ban
     0 18px 40px rgba(0,0,0,.26), 0 2px 6px rgba(0,0,0,.14);
 }
 body.theme-glass .feuille, body.theme-glass .dossier { background-color: rgba(60,60,78,.28); }
-body.theme-glass .onglet[aria-selected="true"] {
+body.theme-glass .onglet-bulle {
   background: linear-gradient(135deg, rgba(255,255,255,.4), rgba(255,255,255,.12));
-  box-shadow: inset 1.2px 1.2px 0 rgba(255,255,255,.7), inset -1px -1px 0 rgba(255,255,255,.3), 0 6px 16px rgba(0,0,0,.2);
+  box-shadow: inset calc(1.2px - var(--inc-x) * 1.2px) calc(1.2px - var(--inc-y) * 1.2px) 0 rgba(255,255,255,.7), inset -1px -1px 0 rgba(255,255,255,.3), 0 6px 16px rgba(0,0,0,.2);
 }
 body.theme-glass .bouton:not(.non) { box-shadow: inset 1.2px 1.2px 0 rgba(255,255,255,.55), inset -1px -1px 0 rgba(0,0,0,.12), 0 8px 18px rgba(255,51,51,.35); background-image: linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,0) 55%); }
 body.theme-glass .bouton.non { background: rgba(255,255,255,.2); box-shadow: inset 1.2px 1.2px 0 rgba(255,255,255,.5), inset -1px -1px 0 rgba(255,255,255,.2); }
@@ -369,6 +371,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   </div>
 
   <nav class="barre" aria-label="Navigation">
+    <span class="onglet-bulle" id="onglet-bulle" aria-hidden="true"></span>
     <button class="onglet" id="onglet-apps" role="tab" aria-selected="true" type="button">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
       Mes apps
@@ -964,6 +967,27 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     var cible = document.getElementById('page-' + page);
     pages.scrollTo({ left: cible.offsetLeft, behavior: 'smooth' });
   }
+  // La pastille de l'onglet actif glisse d'un onglet à l'autre en s'étirant, comme une goutte.
+  var bulle = document.getElementById('onglet-bulle'), bulleGeo = null;
+  function placerBulle(animer) {
+    var sel = document.querySelector('.barre .onglet[aria-selected="true"]');
+    if (!sel) { bulle.style.opacity = '0'; bulleGeo = null; return; }
+    bulle.style.opacity = '';
+    var a = bulleGeo, b = { l: sel.offsetLeft, w: sel.offsetWidth };
+    bulle.style.left = b.l + 'px'; bulle.style.width = b.w + 'px';
+    if (animer && a && (a.l !== b.l || a.w !== b.w)) {
+      var gauche = Math.min(a.l, b.l), droite = Math.max(a.l + a.w, b.l + b.w);
+      anime(bulle, [
+        { left: a.l + 'px', width: a.w + 'px' },
+        { left: gauche + 'px', width: (droite - gauche) + 'px', offset: .45 },
+        { left: b.l + 'px', width: b.w + 'px' }
+      ], { duration: 460, easing: SOUPLE });
+    }
+    bulleGeo = b;
+  }
+  window.addEventListener('resize', function () { placerBulle(false); });
+  setTimeout(function () { placerBulle(false); }, 60);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { placerBulle(false); });
   function surChangementPage() {
     var store = pages.scrollLeft > pages.clientWidth / 2;
     if (store && !storeAffiche) {
@@ -974,6 +998,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     storeAffiche = store;
     ongletApps.setAttribute('aria-selected', String(!store));
     ongletStore.setAttribute('aria-selected', String(store));
+    placerBulle(true);
   }
   pages.addEventListener('scroll', surChangementPage, { passive: true });
   ongletApps.addEventListener('click', function () { allerA('apps'); });
@@ -1209,7 +1234,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.3.1';
+  var APP_VERSION = '1.3.2';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
