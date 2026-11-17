@@ -217,6 +217,35 @@ body.theme-glass .grille-dossier { background: rgba(255,255,255,.2); -webkit-bac
 body.theme-glass .recherche input { border-radius: 30px; }
 body.theme-glass .bouton-store { background-image: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,0) 55%); box-shadow: inset 1.5px 1.5px 0 rgba(255,255,255,.6), inset -1px -1px 0 rgba(0,0,0,.14), 0 12px 26px rgba(255,51,51,.38); }
 body.theme-clair .vide { background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.08); }
+
+/* Liquid Glass : reflets qui suivent l'inclinaison, bord qui réfracte, effet de goutte au toucher */
+body.theme-glass { --inc-x: 0; --inc-y: 0; }
+body.theme-glass .barre, body.theme-glass .feuille, body.theme-glass .dossier, body.theme-glass .dock,
+body.theme-glass .store-ligne, body.theme-glass .vide, body.theme-glass .maj-bandeau, body.theme-glass .recherche input, body.theme-glass .toast, body.theme-glass .jeu-barre {
+  background-image: linear-gradient(calc(135deg + var(--inc-x) * 28deg), rgba(255,255,255,.34) 0%, rgba(255,255,255,.08) 28%, rgba(255,255,255,.02) 58%, rgba(255,255,255,.16) 100%);
+  box-shadow:
+    inset calc(1.5px - var(--inc-x) * 1.4px) calc(1.5px - var(--inc-y) * 1.4px) 0 rgba(255,255,255,.64),
+    inset calc(-1px - var(--inc-x) * 1.2px) calc(-1px - var(--inc-y) * 1.2px) 0 rgba(255,255,255,.3),
+    inset 0 0 22px rgba(255,255,255,.14),
+    inset 0 -10px 18px -10px rgba(255,255,255,.22),
+    0 18px 40px rgba(0,0,0,.26), 0 2px 6px rgba(0,0,0,.14);
+}
+body.theme-glass .barre, body.theme-glass .store-ligne, body.theme-glass .vide, body.theme-glass .dossier { position: relative; }
+body.theme-glass .barre { position: fixed; }
+body.theme-glass .dossier { position: fixed; }
+body.theme-glass .barre, body.theme-glass .store-ligne, body.theme-glass .vide {
+  transition: scale .45s cubic-bezier(.3,1.7,.5,1), background-position .2s ease;
+}
+body.theme-glass .barre:active, body.theme-glass .store-ligne:active, body.theme-glass .vide:active { scale: .975 1.03; transition-duration: .12s; transition-timing-function: ease-out; }
+.lentille { display: none; }
+body.theme-glass .lentille { filter: blur(2px); display: block; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1; overflow: hidden; }
+body.theme-glass .lentille::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit;
+  background: var(--fond-bg); background-repeat: no-repeat;
+  background-size: var(--l-w, 100vw) var(--l-h, 100vh); background-position: var(--l-x, 0) var(--l-y, 0);
+  filter: saturate(1.7) brightness(1.55); opacity: .6; clip-path: var(--l-clip, none);
+}
+@media (prefers-reduced-motion: reduce) { body.theme-glass .barre, body.theme-glass .store-ligne, body.theme-glass .vide { transition: none; } body.theme-glass .barre:active, body.theme-glass .store-ligne:active, body.theme-glass .vide:active { scale: 1; } }
 /* Thème clair */
 body.theme-clair { --texte: #1c1c1e; --doux: rgba(0,0,0,.6); --verre: rgba(0,0,0,.07); --feuille: #f2f2f7; --barre: rgba(255,255,255,.85); --trait: #d1d1d6; --fond-bg: radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.22) 0%, rgba(255,51,51,0) 60%), #f2f2f7; color-scheme: light; }
 body.theme-clair .titre, body.theme-clair .page-titre, body.theme-clair .store-section h2 { color: rgba(0,0,0,.6); }
@@ -383,6 +412,10 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       <p>Afficher les noms<small>Sous chaque icône</small></p>
       <input type="checkbox" class="interrupteur" id="interrupteur-noms" aria-label="Afficher les noms">
     </div>
+    <div class="ligne">
+      <p>Reflets au mouvement<small>Liquid Glass : le verre réagit à l'inclinaison du téléphone</small></p>
+      <input type="checkbox" class="interrupteur" id="interrupteur-mouv" aria-label="Reflets au mouvement">
+    </div>
     <div class="ligne pc-seul">
       <p>Taille des icônes<small>Tablette et ordinateur</small></p>
       <input type="range" id="taille-icones" min="56" max="140" step="2" aria-label="Taille des icônes" style="width:140px">
@@ -442,7 +475,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     return { grille: grille };
   }
   var etat = charger();
-  var reglages = Object.assign({ noms: true, fond: 'gris', fondPerso: null, tailleIcones: 76 }, lire(CLE_REGLAGES) || {});
+  var reglages = Object.assign({ noms: true, fond: 'gris', fondPerso: null, tailleIcones: 76, mouvement: false }, lire(CLE_REGLAGES) || {});
   function sauver() { ecrire(CLE_ORDRE, etat); }
 
   function trouverDossier(id) { return etat.grille.filter(function (x) { return estDossier(x) && x.id === id; })[0] || null; }
@@ -514,6 +547,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     el._tok = (el._tok || 0) + 1;
     el.hidden = false;
     anime(el, [{ opacity: 0, transform: depuis }, { opacity: 1, transform: vers }], { duration: 280, easing: SOUPLE });
+    setTimeout(function () { majVerre(); }, 300);
   }
   function masquer(el, depuis, vers) {
     el._tok = (el._tok || 0) + 1;
@@ -954,6 +988,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     }
     var boutons = document.querySelectorAll('.fond');
     boutons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.id === reglages.fond)); });
+    majVerre();
   }
   var fondsDiv = document.getElementById('fonds');
   FONDS.forEach(function (f) {
@@ -996,11 +1031,86 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   ];
   var theme = 'sombre';
   try { theme = localStorage.getItem(CLE_THEME) || 'sombre'; } catch (e) {}
+
+  // ---- Liquid Glass : bord qui réfracte, reflets qui suivent la souris ou l'inclinaison ----
+  var VERRE = '.barre, .vide, .store-ligne, .dossier';
+  var imgFond = null, imgFondSrc = null;
+  function geoFond() {
+    var vw = window.innerWidth, vh = window.innerHeight, w = vw, h = vh;
+    if (reglages.fond === 'perso' && reglages.fondPerso) {
+      if (imgFondSrc !== reglages.fondPerso) { imgFondSrc = reglages.fondPerso; imgFond = new Image(); imgFond.onload = majVerre; imgFond.src = imgFondSrc; }
+      if (imgFond && imgFond.naturalWidth) { var k = Math.max(vw / imgFond.naturalWidth, vh / imgFond.naturalHeight); w = imgFond.naturalWidth * k; h = imgFond.naturalHeight * k; }
+    }
+    return { w: w, h: h, ox: (vw - w) / 2, oy: (vh - h) / 2 };
+  }
+  // Contour arrondi (un anneau de T pixels) : seule cette bordure montre le fond agrandi.
+  function rr(x, y, w, h, r) {
+    r = Math.max(0, Math.min(r, w / 2, h / 2));
+    return 'M' + (x + r) + ' ' + y + 'H' + (x + w - r) + 'A' + r + ' ' + r + ' 0 0 1 ' + (x + w) + ' ' + (y + r) + 'V' + (y + h - r) + 'A' + r + ' ' + r + ' 0 0 1 ' + (x + w - r) + ' ' + (y + h) + 'H' + (x + r) + 'A' + r + ' ' + r + ' 0 0 1 ' + x + ' ' + (y + h - r) + 'V' + (y + r) + 'A' + r + ' ' + r + ' 0 0 1 ' + (x + r) + ' ' + y + 'Z';
+  }
+  var verreEnAttente = false;
+  function majVerre() {
+    if (!document.body.classList.contains('theme-glass')) return;
+    if (verreEnAttente) return;
+    verreEnAttente = true;
+    requestAnimationFrame(function () {
+      verreEnAttente = false;
+      var g = geoFond(), K = 1.16;
+      document.querySelectorAll(VERRE).forEach(function (el) {
+        if (el.hidden) return;
+        var l = el.querySelector(':scope > .lentille');
+        if (!l) { l = document.createElement('i'); l.className = 'lentille'; l.setAttribute('aria-hidden', 'true'); el.insertBefore(l, el.firstChild); }
+        var r = el.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        // Le bord montre le fond d'écran agrandi autour du centre du verre, comme une lentille.
+        var R = parseFloat(getComputedStyle(el).borderTopLeftRadius) || 0, T = 10;
+        el.style.setProperty('--l-clip', 'path(evenodd, "' + rr(0, 0, r.width, r.height, R) + rr(T, T, r.width - 2 * T, r.height - 2 * T, R - T) + '")');
+        el.style.setProperty('--l-w', (g.w * K) + 'px'); el.style.setProperty('--l-h', (g.h * K) + 'px');
+        el.style.setProperty('--l-x', (r.width / 2 - (cx - g.ox) * K) + 'px'); el.style.setProperty('--l-y', (r.height / 2 - (cy - g.oy) * K) + 'px');
+      });
+    });
+  }
+  ['resize', 'scroll', 'animationend', 'transitionend', 'orientationchange'].forEach(function (ev) { window.addEventListener(ev, majVerre, true); });
+  setInterval(function () { if (document.body.classList.contains('theme-glass') && !document.hidden) majVerre(); }, 700);
+  var incX = 0, incY = 0, incAtt = false;
+  function incliner(x, y) {
+    incX = Math.max(-1, Math.min(1, x)); incY = Math.max(-1, Math.min(1, y));
+    if (incAtt) return; incAtt = true;
+    requestAnimationFrame(function () { incAtt = false; document.body.style.setProperty('--inc-x', incX.toFixed(3)); document.body.style.setProperty('--inc-y', incY.toFixed(3)); });
+  }
+  document.addEventListener('pointermove', function (e) {
+    if (!document.body.classList.contains('theme-glass') || e.pointerType === 'touch' || reglages.mouvement) return;
+    incliner(e.clientX / window.innerWidth * 2 - 1, e.clientY / window.innerHeight * 2 - 1);
+  });
+  var mouvementActif = false;
+  function surOrientation(e) {
+    if (e.gamma == null || !document.body.classList.contains('theme-glass')) return;
+    incliner(e.gamma / 30, ((e.beta || 0) - 45) / 30);
+  }
+  function réglerMouvement() {
+    var veut = !!reglages.mouvement;
+    if (veut && !mouvementActif) { window.addEventListener('deviceorientation', surOrientation); mouvementActif = true; }
+    if (!veut && mouvementActif) { window.removeEventListener('deviceorientation', surOrientation); mouvementActif = false; incliner(0, 0); }
+  }
+  var interrupteurMouv = document.getElementById('interrupteur-mouv');
+  interrupteurMouv.checked = !!reglages.mouvement;
+  interrupteurMouv.addEventListener('change', function () {
+    var veut = interrupteurMouv.checked;
+    function appliquer(ok) {
+      reglages.mouvement = veut && ok; interrupteurMouv.checked = reglages.mouvement; sauverReglages(); réglerMouvement();
+      if (veut && !ok) toast('Le capteur de mouvement n’est pas autorisé sur cet appareil.');
+    }
+    // iPhone : l'accès au capteur se demande ici, depuis un geste de l'utilisateur.
+    if (veut && window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      DeviceOrientationEvent.requestPermission().then(function (r) { appliquer(r === 'granted'); }, function () { appliquer(false); });
+    } else appliquer(true);
+  });
+  réglerMouvement();
   function appliquerTheme() {
     document.body.classList.remove('theme-glass', 'theme-clair');
     if (theme === 'glass') document.body.classList.add('theme-glass');
     if (theme === 'clair') document.body.classList.add('theme-clair');
     document.querySelectorAll('.theme-btn').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.id === theme)); });
+    majVerre();
   }
   var themesDiv = document.getElementById('themes');
   THEMES.forEach(function (th) {
@@ -1097,7 +1207,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.2.1';
+  var APP_VERSION = '1.3.0';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
