@@ -437,7 +437,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
 <script>
 (function () {
   // Icônes : Naval et Cloud et TM en image ; Speed et Lien redessinées en SVG (style Naval).
-  var APPS = [{"id": "naval", "nom": "C02 Naval", "kind": "lien", "categorie": "jeu", "description": "Bataille navale à deux joueurs", "href": "https://drfrrobin.github.io/C02-Naval/", "svg": true, "fond": "#050d1b"}, {"id": "tm", "nom": "Transport Manager", "kind": "lien", "categorie": "jeu", "description": "Gestion de transport", "href": "https://transport-manager.net/", "svg": true, "fond": "#06291a"}, {"id": "zombie", "nom": "The Infected Grounds", "kind": "lien", "categorie": "jeu", "description": "Survie zombie en vue de côté (Ghoster-001)", "href": "https://ghoster-001.github.io/Zombie-Survivor-By-C02/", "svg": true, "fond": "#05140a"}, {"id": "tanks", "nom": "CO2 Tanks", "kind": "lien", "categorie": "jeu", "description": "Chars en labyrinthe, arcade rétro (Ghoster-001)", "href": "https://ghoster-001.github.io/CO2-Tanks/", "svg": true, "fond": "#0b1020"}, {"id": "cloud", "nom": "NC Cloud", "kind": "lien", "categorie": "app", "description": "Nextcloud de la C02 Team", "href": "https://nc.c02.app/", "svg": true, "fond": "#050d1b", "native": {"android": "com.nextcloud.client", "ios": "nextcloud://"}}, {"id": "speed", "nom": "Speed Test", "kind": "lien", "categorie": "app", "description": "Test de débit", "href": "https://sp.c02.app/", "svg": true, "fond": "#050d1b"}, {"id": "lien", "nom": "Lien", "kind": "lien", "categorie": "app", "description": "Raccourcisseur de liens", "href": "https://link.c02.app/link", "svg": true, "fond": "#050d1b"}, {"id": "talk", "nom": "Talk", "kind": "lien", "categorie": "app", "description": "Discussion et appels (Nextcloud Talk)", "href": "https://talk.c02.app/", "svg": true, "fond": "#050d1b", "native": {"android": "com.nextcloud.talk2", "ios": "nextcloudtalk://"}}];
+  var APPS = [{"id": "naval", "nom": "C02 Naval", "kind": "lien", "categorie": "jeu", "description": "Bataille navale à deux joueurs", "href": "https://drfrrobin.github.io/C02-Naval/", "svg": true, "fond": "#050d1b"}, {"id": "tm", "nom": "Transport Manager", "kind": "lien", "categorie": "jeu", "description": "Gestion de transport", "href": "https://transport-manager.net/", "svg": true, "fond": "#06291a"}, {"id": "zombie", "nom": "The Infected Grounds", "kind": "lien", "categorie": "jeu", "description": "Survie zombie en vue de côté (Ghoster-001)", "href": "https://ghoster-001.github.io/Zombie-Survivor-By-C02/", "svg": true, "fond": "#05140a"}, {"id": "tanks", "nom": "CO2 Tanks", "kind": "lien", "categorie": "jeu", "description": "Chars en labyrinthe, arcade rétro (Ghoster-001)", "href": "https://ghoster-001.github.io/CO2-Tanks/", "svg": true, "fond": "#0b1020"}, {"id": "openfront", "nom": "OpenFront", "kind": "lien", "categorie": "jeu", "description": "Stratégie en ligne : conquiers la carte (openfront.io)", "href": "https://openfront.io/", "svg": true, "fond": "#050d1b", "cadre": false}, {"id": "cloud", "nom": "NC Cloud", "kind": "lien", "categorie": "app", "description": "Nextcloud de la C02 Team", "href": "https://nc.c02.app/", "svg": true, "fond": "#050d1b", "native": {"android": "com.nextcloud.client", "ios": "nextcloud://"}}, {"id": "speed", "nom": "Speed Test", "kind": "lien", "categorie": "app", "description": "Test de débit", "href": "https://sp.c02.app/", "svg": true, "fond": "#050d1b"}, {"id": "lien", "nom": "Lien", "kind": "lien", "categorie": "app", "description": "Raccourcisseur de liens", "href": "https://link.c02.app/link", "svg": true, "fond": "#050d1b"}, {"id": "talk", "nom": "Talk", "kind": "lien", "categorie": "app", "description": "Discussion et appels (Nextcloud Talk)", "href": "https://talk.c02.app/", "svg": true, "fond": "#050d1b", "native": {"android": "com.nextcloud.talk2", "ios": "nextcloudtalk://"}}];
   var FONDS = [
     { id: 'gris', nom: 'Gris rouge', css: 'radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.42) 0%, rgba(255,51,51,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(255,51,51,.18) 0%, rgba(255,51,51,0) 60%), #333033', apercu: '#333033' },
     { id: 'violet', nom: 'Violet', css: 'radial-gradient(120% 60% at 90% 0%, rgba(168,85,247,.5) 0%, rgba(168,85,247,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(236,72,153,.22) 0%, rgba(236,72,153,0) 60%), #1d1830', apercu: '#1d1830' },
@@ -524,9 +524,11 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   };
   STYLE.zombie = ['#2e7d32', '#05140a', '#b9f6ca'];
   STYLE.tanks  = ['#1e88e5', '#0b1020', '#8fd3ff'];
+  STYLE.openfront = ['#1565c0', '#050d1b', '#8fd3ff'];
   STYLE.talk   = ['#1565c0', '#050d1b', '#8fd3ff'];
   GLYPHE.zombie = '<circle cx="48" cy="42" r="22" fill="none" stroke="{c}" stroke-width="6"/><circle cx="40" cy="40" r="4" fill="{c}"/><circle cx="56" cy="40" r="4" fill="{c}"/><path d="M40 56 L44 62 L48 56 L52 62 L56 56" stroke="{c}" stroke-width="4" fill="none" stroke-linejoin="round"/><path d="M36 70 V80 M48 68 V82 M60 70 V80" stroke="{c}" stroke-width="5" stroke-linecap="round"/>';
   GLYPHE.tanks = '<rect x="20" y="52" width="56" height="22" rx="8" fill="{c}"/><circle cx="48" cy="46" r="13" fill="none" stroke="{c}" stroke-width="6"/><path d="M48 46 H82" stroke="{c}" stroke-width="6" stroke-linecap="round"/>';
+  GLYPHE.openfront = '<circle cx="46" cy="46" r="26" fill="none" stroke="{c}" stroke-width="5"/><ellipse cx="46" cy="46" rx="11" ry="26" fill="none" stroke="{c}" stroke-width="4"/><path d="M20 46 H72 M26 33 H66 M26 59 H66" stroke="{c}" stroke-width="3.5" stroke-linecap="round"/><path d="M52 80 L78 54 M78 54 V70 M78 54 H62" stroke="{c}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>';
   GLYPHE.talk = '<path d="M22 28 H74 A8 8 0 0 1 82 36 V58 A8 8 0 0 1 74 66 H48 L34 80 V66 H22 A8 8 0 0 1 14 58 V36 A8 8 0 0 1 22 28 Z" fill="none" stroke="{c}" stroke-width="6" stroke-linejoin="round"/><circle cx="34" cy="47" r="4" fill="{c}"/><circle cx="48" cy="47" r="4" fill="{c}"/><circle cx="62" cy="47" r="4" fill="{c}"/>';
   function svgIcone(app) {
     var s = STYLE[app.id], g = 'g' + app.id;
@@ -830,7 +832,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     if (!app || !app.href) return;
     if (navigator.onLine === false && !cadresJeux[app.id]) return toast('Hors ligne : cette app a besoin d’une connexion.');
     if (app.native) return ouvrirNatif(app);
-    if (app.categorie === 'jeu') return ouvrirJeu(app);
+    if (app.categorie === 'jeu' && app.cadre !== false) return ouvrirJeu(app);
     ouvrirLien(app.href);
   }
 
@@ -1207,7 +1209,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.3.0';
+  var APP_VERSION = '1.3.1';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
