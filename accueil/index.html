@@ -68,10 +68,12 @@ body.sans-noms .nom { display: none; }
 .fantome { position: fixed; left: 0; top: 0; pointer-events: none; z-index: 50; opacity: .95; }
 .fantome .icone { box-shadow: 0 16px 30px rgba(0,0,0,.5); }
 
-.vide { text-align: center; margin: 14vh auto 0; max-width: 340px; }
-.vide h2 { margin: 0 0 8px; font-size: 22px; }
-.vide p { margin: 0 0 26px; color: var(--doux); }
-.bouton-store { display: inline-flex; align-items: center; gap: 10px; font: inherit; font-size: 17px; font-weight: 600; color: var(--texte); background: var(--rouge); border: 0; border-radius: 34px; padding: 16px 30px; cursor: pointer; box-shadow: 0 12px 30px rgba(255,51,51,.4); }
+.vide { text-align: center; margin: 12vh auto 0; max-width: 360px; padding: 34px 28px 30px; border-radius: 32px; background: var(--verre); display: flex; flex-direction: column; align-items: center; }
+.vide-icone { width: 76px; height: 76px; border-radius: 24px; display: grid; place-items: center; margin-bottom: 20px; color: #fff; background: linear-gradient(160deg, #ff5a5a, #d81f1f); box-shadow: inset 1.5px 1.5px 0 rgba(255,255,255,.45), 0 14px 28px rgba(255,51,51,.35); }
+.vide-icone svg { width: 38px; height: 38px; }
+.vide h2 { margin: 0 0 8px; font-size: 24px; font-family: 'Playfair Display', Georgia, serif; font-weight: 600; letter-spacing: -.3px; }
+.vide p { margin: 0 0 26px; color: var(--doux); font-size: 16px; line-height: 1.5; max-width: 26ch; }
+.bouton-store { display: inline-flex; align-items: center; gap: 10px; font: inherit; font-size: 17px; font-weight: 600; color: #fff; background: var(--rouge); border: 0; border-radius: 34px; padding: 15px 28px; cursor: pointer; box-shadow: 0 12px 30px rgba(255,51,51,.4); }
 .bouton-store svg { width: 22px; height: 22px; }
 .bouton-store:active { transform: scale(.97); }
 .recherche { max-width: 1100px; margin: 18px auto 0; }
@@ -190,7 +192,7 @@ input, textarea { -webkit-user-select: text; user-select: text; }
 /* Thème Liquid Glass : verre épais, reflets sur les bords, lumière qui traverse */
 body.theme-glass { --verre: rgba(255,255,255,.2); --feuille: rgba(40,40,52,.34); --barre: rgba(255,255,255,.16); }
 body.theme-glass .barre, body.theme-glass .feuille, body.theme-glass .dossier, body.theme-glass .dock,
-body.theme-glass .store-ligne, body.theme-glass .bouton-store, body.theme-glass .vide, body.theme-glass .maj-bandeau, body.theme-glass .recherche input, body.theme-glass .toast, body.theme-glass .jeu-barre {
+body.theme-glass .store-ligne, body.theme-glass .vide, body.theme-glass .maj-bandeau, body.theme-glass .recherche input, body.theme-glass .toast, body.theme-glass .jeu-barre {
   -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(1.08); backdrop-filter: blur(26px) saturate(190%) brightness(1.08);
   background-color: rgba(255,255,255,.1);
   background-image: linear-gradient(135deg, rgba(255,255,255,.34) 0%, rgba(255,255,255,.08) 28%, rgba(255,255,255,.02) 58%, rgba(255,255,255,.16) 100%);
@@ -213,6 +215,8 @@ body.theme-glass .icone { position: relative; box-shadow: inset 1.5px 1.5px 0 rg
 body.theme-glass .icone::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(160deg, rgba(255,255,255,.38) 0%, rgba(255,255,255,0) 42%, rgba(255,255,255,0) 72%, rgba(255,255,255,.14) 100%); }
 body.theme-glass .grille-dossier { background: rgba(255,255,255,.2); -webkit-backdrop-filter: blur(20px) saturate(170%); backdrop-filter: blur(20px) saturate(170%); box-shadow: inset 1.2px 1.2px 0 rgba(255,255,255,.5), inset -1px -1px 0 rgba(255,255,255,.2); }
 body.theme-glass .recherche input { border-radius: 30px; }
+body.theme-glass .bouton-store { background-image: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,0) 55%); box-shadow: inset 1.5px 1.5px 0 rgba(255,255,255,.6), inset -1px -1px 0 rgba(0,0,0,.14), 0 12px 26px rgba(255,51,51,.38); }
+body.theme-clair .vide { background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,.08); }
 /* Thème clair */
 body.theme-clair { --texte: #1c1c1e; --doux: rgba(0,0,0,.6); --verre: rgba(0,0,0,.07); --feuille: #f2f2f7; --barre: rgba(255,255,255,.85); --trait: #d1d1d6; --fond-bg: radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.22) 0%, rgba(255,51,51,0) 60%), #f2f2f7; color-scheme: light; }
 body.theme-clair .titre, body.theme-clair .page-titre, body.theme-clair .store-section h2 { color: rgba(0,0,0,.6); }
@@ -305,6 +309,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     <section class="page" id="page-apps" aria-label="Mes apps">
       <p class="page-titre">Mes apps</p>
       <div class="vide" id="vide" hidden>
+        <div class="vide-icone" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><path d="M17 13.5v7M13.5 17h7" stroke-linecap="round"/></svg></div>
         <h2>Ton écran est vide</h2>
         <p>Ajoute tes jeux et applications depuis le Store.</p>
         <button class="bouton-store" id="ouvrir-store" type="button">
@@ -1086,7 +1091,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.2.0';
+  var APP_VERSION = '1.2.1';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
