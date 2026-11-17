@@ -37,10 +37,14 @@ body {
   padding: calc(56px + env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-left,0px)) calc(96px + env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-right,0px));
 }
 .page-titre { text-align: center; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--doux); margin: 8px 0 0; }
-.grille {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--ico-case, 74px), 1fr)); gap: 26px 8px;
-  justify-items: center; width: 100%; max-width: 1100px; margin: 22px auto 0; padding: 0; list-style: none;
-}
+.accueil { width: 100%; max-width: 1100px; margin: 22px auto 0; display: flex; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; height: calc(100vh - 230px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); height: calc(100dvh - 230px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); min-height: 170px; }
+.accueil::-webkit-scrollbar { display: none; }
+.grille { flex: 0 0 100%; width: 100%; scroll-snap-align: start; scroll-snap-stop: always; display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--ico-case, 74px), 1fr)); gap: 26px 8px; justify-items: center; align-content: start; box-sizing: border-box; padding: 6px 4px; margin: 0; list-style: none; }
+.points { display: flex; justify-content: center; gap: 9px; margin: 14px 0 0; }
+.points button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: var(--doux); opacity: .45; cursor: pointer; transition: opacity .2s ease, transform .2s ease; }
+.points button[aria-current="true"] { opacity: 1; transform: scale(1.25); background: var(--texte); }
+.toast { position: fixed; left: 50%; bottom: calc(110px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 90; background: var(--feuille); color: var(--texte); border-radius: 22px; padding: 10px 18px; font-size: 14px; box-shadow: 0 12px 30px rgba(0,0,0,.4); max-width: 90vw; text-align: center; }
+.store-outils { max-width: 1100px; margin: 14px auto 0; display: flex; justify-content: flex-end; }
 .store-section { max-width: 1100px; margin: 26px auto 0; }
 .store-section h2 { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--doux); margin: 0 0 12px; font-weight: 600; }
 .store-liste { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
@@ -183,17 +187,32 @@ input, textarea { -webkit-user-select: text; user-select: text; }
 .theme-btn span { display: block; height: 58px; border-radius: 12px; margin-bottom: 6px; }
 .theme-btn[aria-pressed="true"] { border-color: var(--texte); }
 .theme-btn:active { transform: scale(.96); }
-/* Thème Liquid Glass */
-body.theme-glass { --verre: rgba(255,255,255,.16); --feuille: rgba(28,28,34,.42); --barre: rgba(255,255,255,.14); }
+/* Thème Liquid Glass : verre épais, reflets sur les bords, lumière qui traverse */
+body.theme-glass { --verre: rgba(255,255,255,.2); --feuille: rgba(40,40,52,.34); --barre: rgba(255,255,255,.16); }
 body.theme-glass .barre, body.theme-glass .feuille, body.theme-glass .dossier, body.theme-glass .dock,
-body.theme-glass .store-ligne, body.theme-glass .bouton-store, body.theme-glass .vide, body.theme-glass .maj-bandeau, body.theme-glass .recherche input {
-  -webkit-backdrop-filter: blur(28px) saturate(180%); backdrop-filter: blur(28px) saturate(180%);
-  border: 1px solid rgba(255,255,255,.28);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.38), inset 0 -1px 0 rgba(255,255,255,.08), 0 14px 40px rgba(0,0,0,.28);
+body.theme-glass .store-ligne, body.theme-glass .bouton-store, body.theme-glass .vide, body.theme-glass .maj-bandeau, body.theme-glass .recherche input, body.theme-glass .toast, body.theme-glass .jeu-barre {
+  -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(1.08); backdrop-filter: blur(26px) saturate(190%) brightness(1.08);
+  background-color: rgba(255,255,255,.1);
+  background-image: linear-gradient(135deg, rgba(255,255,255,.34) 0%, rgba(255,255,255,.08) 28%, rgba(255,255,255,.02) 58%, rgba(255,255,255,.16) 100%);
+  border: 0;
+  box-shadow:
+    inset 1.5px 1.5px 0 rgba(255,255,255,.62),
+    inset -1px -1px 0 rgba(255,255,255,.28),
+    inset 0 0 22px rgba(255,255,255,.14),
+    inset 0 -10px 18px -10px rgba(255,255,255,.22),
+    0 18px 40px rgba(0,0,0,.26), 0 2px 6px rgba(0,0,0,.14);
 }
-body.theme-glass .store-ligne, body.theme-glass .dossier, body.theme-glass .feuille { background-image: linear-gradient(160deg, rgba(255,255,255,.18), rgba(255,255,255,.04)); }
-body.theme-glass .icone { box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 10px 22px rgba(0,0,0,.28); }
-body.theme-glass .grille-dossier { background: rgba(255,255,255,.22); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); }
+body.theme-glass .feuille, body.theme-glass .dossier { background-color: rgba(60,60,78,.28); }
+body.theme-glass .onglet[aria-selected="true"] {
+  background: linear-gradient(135deg, rgba(255,255,255,.4), rgba(255,255,255,.12));
+  box-shadow: inset 1.2px 1.2px 0 rgba(255,255,255,.7), inset -1px -1px 0 rgba(255,255,255,.3), 0 6px 16px rgba(0,0,0,.2);
+}
+body.theme-glass .bouton:not(.non) { box-shadow: inset 1.2px 1.2px 0 rgba(255,255,255,.55), inset -1px -1px 0 rgba(0,0,0,.12), 0 8px 18px rgba(255,51,51,.35); background-image: linear-gradient(180deg, rgba(255,255,255,.3), rgba(255,255,255,0) 55%); }
+body.theme-glass .bouton.non { background: rgba(255,255,255,.2); box-shadow: inset 1.2px 1.2px 0 rgba(255,255,255,.5), inset -1px -1px 0 rgba(255,255,255,.2); }
+body.theme-glass .icone { position: relative; box-shadow: inset 1.5px 1.5px 0 rgba(255,255,255,.55), inset -1px -1px 0 rgba(255,255,255,.2), 0 12px 24px rgba(0,0,0,.3); }
+body.theme-glass .icone::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(160deg, rgba(255,255,255,.38) 0%, rgba(255,255,255,0) 42%, rgba(255,255,255,0) 72%, rgba(255,255,255,.14) 100%); }
+body.theme-glass .grille-dossier { background: rgba(255,255,255,.2); -webkit-backdrop-filter: blur(20px) saturate(170%); backdrop-filter: blur(20px) saturate(170%); box-shadow: inset 1.2px 1.2px 0 rgba(255,255,255,.5), inset -1px -1px 0 rgba(255,255,255,.2); }
+body.theme-glass .recherche input { border-radius: 30px; }
 /* Thème clair */
 body.theme-clair { --texte: #1c1c1e; --doux: rgba(0,0,0,.6); --verre: rgba(0,0,0,.07); --feuille: #f2f2f7; --barre: rgba(255,255,255,.85); --trait: #d1d1d6; --fond-bg: radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.22) 0%, rgba(255,51,51,0) 60%), #f2f2f7; color-scheme: light; }
 body.theme-clair .titre, body.theme-clair .page-titre, body.theme-clair .store-section h2 { color: rgba(0,0,0,.6); }
@@ -293,7 +312,8 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
           Ouvrir le Store
         </button>
       </div>
-      <ul class="grille" id="grille"></ul>
+      <div class="accueil" id="grille"></div>
+      <div class="points" id="points" hidden></div>
     </section>
 
     <section class="page" id="page-store" aria-label="Store">
@@ -301,6 +321,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       <div class="recherche">
         <input type="search" id="recherche" placeholder="Rechercher une app ou un jeu" aria-label="Rechercher une app ou un jeu" autocomplete="off">
       </div>
+      <div class="store-outils"><button class="bouton" id="tout-ajouter" type="button">Tout ajouter</button></div>
       <p class="aucun" id="aucun" hidden>Aucun résultat pour cette recherche.</p>
       <div class="store-section">
         <h2>Jeux</h2>
@@ -539,22 +560,61 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     a.appendChild(ic); a.appendChild(nom);
     return a;
   }
+  var accueilEl = document.getElementById('grille'), pointsEl = document.getElementById('points');
+  // Combien d'icônes tiennent sur une page : colonnes et lignes mesurées à l'écran.
+  function capacite() {
+    var essai = document.createElement('ul'); essai.className = 'grille'; essai.style.visibility = 'hidden';
+    var t = document.createElement('li'); t.className = 'app'; t.innerHTML = '<span class="icone"></span><span class="titre">M</span>';
+    essai.appendChild(t); accueilEl.appendChild(essai);
+    var cols = Math.max(1, getComputedStyle(essai).gridTemplateColumns.split(' ').length);
+    var th = Math.max(60, t.offsetHeight), H = accueilEl.clientHeight - 12;
+    essai.remove();
+    var lignes = Math.max(1, Math.floor((H + 26) / (th + 26)));
+    return cols * lignes;
+  }
   function rendre() {
-    var g = document.getElementById('grille');
+    var g = accueilEl;
+    var gardeX = g.scrollLeft, gardePage = Math.round(g.scrollLeft / Math.max(1, g.clientWidth));
     g.textContent = '';
+    var tuiles = [];
     etat.grille.forEach(function (x, i) {
       if (typeof x !== 'string' && !estDossier(x)) return;
       if (typeof x === 'string' && !appDe(x)) return;
       var n = tuile(x);
       if (animerEntree) { n.classList.add('neuf'); n.style.setProperty('--d', (i * 55) + 'ms'); }
-      g.appendChild(n);
+      tuiles.push(n);
     });
+    var cap = tuiles.length ? capacite() : 1, nb = Math.max(1, Math.ceil(tuiles.length / cap));
+    for (var k = 0; k < nb; k++) {
+      var ul = document.createElement('ul'); ul.className = 'grille';
+      tuiles.slice(k * cap, (k + 1) * cap).forEach(function (n) { ul.appendChild(n); });
+      g.appendChild(ul);
+    }
+    g.style.scrollBehavior = 'auto'; g.scrollLeft = Math.min(gardePage, nb - 1) * g.clientWidth; g.style.scrollBehavior = '';
+    pointsEl.textContent = '';
+    for (var j = 0; j < nb; j++) {
+      (function (j) {
+        var b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Page ' + (j + 1));
+        b.addEventListener('click', function () { g.scrollTo({ left: j * g.clientWidth, behavior: 'smooth' }); });
+        pointsEl.appendChild(b);
+      })(j);
+    }
+    pointsEl.hidden = nb < 2;
+    majPoints();
     animerEntree = false;
     document.getElementById('vide').hidden = etat.grille.length > 0;
     g.hidden = etat.grille.length === 0;
+    if (etat.grille.length === 0) pointsEl.hidden = true;
     rendreStore();
     if (dossierOuvert) rendreDossier();
   }
+  function majPoints() {
+    var i = Math.round(accueilEl.scrollLeft / Math.max(1, accueilEl.clientWidth));
+    Array.prototype.forEach.call(pointsEl.children, function (b, j) { b.setAttribute('aria-current', String(j === i)); });
+  }
+  accueilEl.addEventListener('scroll', majPoints, { passive: true });
+  var tempsRedim = null;
+  window.addEventListener('resize', function () { clearTimeout(tempsRedim); tempsRedim = setTimeout(function () { if (!geste) rendre(); }, 200); });
   function correspond(app, terme) {
     if (!terme) return true;
     return (app.nom + ' ' + (app.description || '')).toLowerCase().indexOf(terme) >= 0;
@@ -586,7 +646,17 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       });
     });
     document.getElementById('aucun').hidden = total > 0;
+    var tout = APPS.every(function (a) { return surAccueil(a.id); });
+    var bt = document.getElementById('tout-ajouter');
+    bt.textContent = tout ? 'Tout retirer' : 'Tout ajouter';
+    bt.classList.toggle('non', tout);
   }
+  document.getElementById('tout-ajouter').addEventListener('click', function () {
+    var tout = APPS.every(function (a) { return surAccueil(a.id); });
+    if (tout) { APPS.forEach(function (a) { retirer(a.id); }); }
+    else { APPS.forEach(function (a) { if (!surAccueil(a.id)) ajouterSurAccueil(a.id); }); animerEntree = true; }
+    nettoyer(); sauver(); rendre();
+  });
   document.getElementById('recherche').addEventListener('input', rendreStore);
   // Un jeu ajouté depuis le Store va dans le dossier Jeux ; une app reste sur l'accueil.
   function ajouterSurAccueil(id) {
@@ -702,11 +772,18 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   document.addEventListener('click', function (e) {
     if (e.isTrusted && Date.now() - dernierOuvert < 500 && !(e.target.closest && e.target.closest('#jeu-fermer'))) { e.stopPropagation(); e.preventDefault(); }
   }, true);
+  var toastEl = null;
+  function toast(txt) {
+    if (!toastEl) { toastEl = document.createElement('div'); toastEl.className = 'toast'; toastEl.setAttribute('role', 'status'); document.body.appendChild(toastEl); }
+    toastEl.textContent = txt; toastEl.hidden = false;
+    clearTimeout(toastEl._t); toastEl._t = setTimeout(function () { toastEl.hidden = true; }, 2600);
+  }
   function ouvrir(cle, kind) {
     dernierOuvert = Date.now();
     if (kind === 'dossier') return ouvrirDossier(cle);
     var app = appDe(cle);
     if (!app || !app.href) return;
+    if (navigator.onLine === false && !cadresJeux[app.id]) return toast('Hors ligne : cette app a besoin d’une connexion.');
     if (app.native) return ouvrirNatif(app);
     if (app.categorie === 'jeu') return ouvrirJeu(app);
     ouvrirLien(app.href);
@@ -763,6 +840,16 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       nettoyer(); sauver(); fermerDossier(); rendreAvecAnimation(); marquer(geste.id);
       return;
     }
+    // Près du bord de l'écran : tourner la page d'accueil.
+    if (!geste.dans) {
+      var zr = accueilEl.getBoundingClientRect(), bord = e.clientX < zr.left + 28 ? -1 : (e.clientX > zr.right - 28 ? 1 : 0);
+      if (bord && !geste.bordTimer) {
+        geste.bordTimer = setTimeout(function () {
+          geste.bordTimer = null;
+          if (geste) accueilEl.scrollBy({ left: bord * accueilEl.clientWidth, behavior: 'smooth' });
+        }, 600);
+      } else if (!bord && geste.bordTimer) { clearTimeout(geste.bordTimer); geste.bordTimer = null; }
+    }
     var sous = document.elementFromPoint(e.clientX, e.clientY);
     if (!sous) return;
 
@@ -804,7 +891,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   function finGeste(e) {
     if (!geste || e.pointerId !== geste.pointer) return;
     var g = geste; geste = null;
-    clearTimeout(g.timer);
+    clearTimeout(g.timer); clearTimeout(g.bordTimer);
     if (fantome) { fantome.remove(); fantome = null; }
     document.querySelectorAll('.app.source').forEach(function (n) { n.classList.remove('source'); });
     if (!g.glisse) ouvrir(g.id, g.kind);
@@ -999,7 +1086,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.1.8';
+  var APP_VERSION = '1.2.0';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
