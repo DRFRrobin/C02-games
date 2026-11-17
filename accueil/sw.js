@@ -1,5 +1,5 @@
 // Cache minimal : la page d'accueil fonctionne aussi hors ligne une fois ouverte.
-const VERSION = '1.3.2';
+const VERSION = '1.3.3';
 const CACHE = 'c02-accueil-v' + VERSION;
 const FICHIERS = ['./', './index.html', './conditions.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
