@@ -38,7 +38,7 @@ body {
 }
 .page-titre { text-align: center; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--doux); margin: 8px 0 0; }
 .grille {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(74px, 1fr)); gap: 26px 8px;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--ico-case, 74px), 1fr)); gap: 26px 8px;
   justify-items: center; width: 100%; max-width: 1100px; margin: 22px auto 0; padding: 0; list-style: none;
 }
 .store-section { max-width: 1100px; margin: 26px auto 0; }
@@ -55,7 +55,7 @@ body {
 .app { display: flex; flex-direction: column; align-items: center; gap: 7px; width: 100%; min-width: 0; color: inherit; cursor: pointer; user-select: none; -webkit-user-select: none; touch-action: none; outline: none; border-radius: 18px; }
 .app:focus-visible { box-shadow: 0 0 0 2px var(--rouge); }
 .app.source { opacity: .25; }
-.icone { width: min(76px, 100%); aspect-ratio: 1; border-radius: 22%; overflow: hidden; display: grid; place-items: center; box-shadow: 0 6px 14px rgba(0,0,0,.35); background: #1e1d1f; }
+.icone { width: min(var(--ico, 76px), 100%); aspect-ratio: 1; border-radius: 22%; overflow: hidden; display: grid; place-items: center; box-shadow: 0 6px 14px rgba(0,0,0,.35); background: #1e1d1f; }
 .icone img, .icone svg { width: 100%; height: 100%; display: block; pointer-events: none; }
 .icone img.logo { width: 78%; height: 78%; object-fit: contain; }
 .nom { font-size: 13px; font-weight: 500; text-align: center; line-height: 1.2; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -202,6 +202,13 @@ body.theme-clair .store-ligne { background: #ffffff; }
 body.theme-clair .dossier { background: #f2f2f7; }
 body.theme-clair .grille-dossier { background: rgba(0,0,0,.08); }
 body.theme-clair .dock { background: rgba(255,255,255,.7); }
+/* Taille des icônes : réglable sur tablette et PC seulement */
+.pc-seul { display: none !important; }
+@media (min-width: 700px) {
+  .pc-seul { display: flex !important; }
+  .grille { --ico-case: calc(var(--ico-taille, 76px) - 2px); }
+  .grille .icone { --ico: var(--ico-taille, 76px); }
+}
 /* Téléphone : l'heure est déjà affichée par le téléphone */
 @media (max-width: 600px), (pointer: coarse) { .statut { display: none; } }
 </style>
@@ -317,6 +324,10 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
       <p>Afficher les noms<small>Sous chaque icône</small></p>
       <input type="checkbox" class="interrupteur" id="interrupteur-noms" aria-label="Afficher les noms">
     </div>
+    <div class="ligne pc-seul">
+      <p>Taille des icônes<small>Tablette et ordinateur</small></p>
+      <input type="range" id="taille-icones" min="56" max="140" step="2" aria-label="Taille des icônes" style="width:140px">
+    </div>
     <div class="ligne">
       <p>Ordre des apps<small>Glisse une app pour la déplacer</small></p>
       <button class="bouton non" id="reinitialiser" type="button">Réinitialiser</button>
@@ -372,7 +383,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     return { grille: grille };
   }
   var etat = charger();
-  var reglages = Object.assign({ noms: true, fond: 'gris', fondPerso: null }, lire(CLE_REGLAGES) || {});
+  var reglages = Object.assign({ noms: true, fond: 'gris', fondPerso: null, tailleIcones: 76 }, lire(CLE_REGLAGES) || {});
   function sauver() { ecrire(CLE_ORDRE, etat); }
 
   function trouverDossier(id) { return etat.grille.filter(function (x) { return estDossier(x) && x.id === id; })[0] || null; }
@@ -909,6 +920,15 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
     document.body.classList.toggle('sans-noms', !reglages.noms);
     interrupteur.checked = !!reglages.noms;
   }
+  var curseurTaille = document.getElementById('taille-icones');
+  function appliquerTaille() {
+    var t = Math.max(56, Math.min(140, Number(reglages.tailleIcones) || 76));
+    document.documentElement.style.setProperty('--ico-taille', t + 'px');
+    curseurTaille.value = t;
+  }
+  curseurTaille.addEventListener('input', function () { reglages.tailleIcones = Number(curseurTaille.value); appliquerTaille(); });
+  curseurTaille.addEventListener('change', sauverReglages);
+  appliquerTaille();
   interrupteur.addEventListener('change', function () { reglages.noms = interrupteur.checked; sauverReglages(); appliquerNoms(); });
   document.getElementById('reinitialiser').addEventListener('click', function () {
     etat = { grille: JSON.parse(JSON.stringify(DEFAUT_ORDRE.grille)) };
@@ -946,7 +966,7 @@ body.theme-clair .dock { background: rgba(255,255,255,.7); }
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.1.4';
+  var APP_VERSION = '1.1.5';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
