@@ -262,9 +262,14 @@ body::before { content: ""; position: fixed; inset: -34px; z-index: -1; pointer-
 body.fond-anime::before { animation: derive 26s ease-in-out infinite alternate; }
 @keyframes derive { from { transform: translate(0, 0) scale(1); } to { transform: translate(-18px, -12px) scale(1.08); } }
 body.sans-parallaxe::before { translate: none; }
+/* Fond RGB : toutes les couleurs défilent, un tour en 7 secondes */
+@keyframes rgb { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg); } }
+body.fond-rgb::before { animation: rgb 7s linear infinite; }
+body.fond-rgb.fond-anime::before { animation: rgb 7s linear infinite, derive 26s ease-in-out infinite alternate; }
+body.fond-rgb .lentille::after { opacity: 0; }
 .grille { translate: calc(var(--inc-x) * 6px) calc(var(--inc-y) * 6px); transition: translate .25s ease-out; }
 body.sans-parallaxe .grille { translate: none; }
-@media (prefers-reduced-motion: reduce) { body::before, body.fond-anime::before { animation: none !important; translate: none; } .grille { translate: none; } }
+@media (prefers-reduced-motion: reduce) { body::before, body.fond-anime::before, body.fond-rgb::before { animation: none !important; translate: none; } .grille { translate: none; } }
 .app { position: relative; }
 .croix { display: none; position: absolute; top: -8px; left: calc(50% - min(var(--ico, 76px), 100%) / 2 - 8px); width: 26px; height: 26px; padding: 0; border-radius: 50%; border: 1px solid rgba(255,255,255,.35); background: rgba(30,30,34,.92); color: #fff; font: 600 17px/1 'Inter', system-ui, sans-serif; cursor: pointer; z-index: 3; place-items: center; }
 body.edition .croix { display: grid; }
@@ -477,6 +482,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
     { id: 'violet', nom: 'Violet', css: 'radial-gradient(120% 60% at 90% 0%, rgba(168,85,247,.5) 0%, rgba(168,85,247,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(236,72,153,.22) 0%, rgba(236,72,153,0) 60%), #1d1830', apercu: '#1d1830' },
     { id: 'vert', nom: 'Vert', css: 'radial-gradient(120% 60% at 90% 0%, rgba(16,185,129,.45) 0%, rgba(16,185,129,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(132,204,22,.18) 0%, rgba(132,204,22,0) 60%), #0b1f17', apercu: '#0b1f17' },
     { id: 'ocean', nom: 'Océan', css: 'radial-gradient(120% 60% at 90% 0%, rgba(14,165,233,.5) 0%, rgba(14,165,233,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(59,130,246,.2) 0%, rgba(59,130,246,0) 60%), #0c1a2e', apercu: '#0c1a2e' },
+    { id: 'rgb', nom: 'RGB', rgb: true, css: 'radial-gradient(75% 50% at 12% 8%, rgba(255,0,70,.9) 0%, rgba(255,0,70,0) 65%), radial-gradient(75% 50% at 92% 32%, rgba(0,255,120,.8) 0%, rgba(0,255,120,0) 65%), radial-gradient(85% 55% at 38% 100%, rgba(0,120,255,.9) 0%, rgba(0,120,255,0) 65%), #0a0a14', apercu: 'conic-gradient(from 200deg at 50% 60%, #ff0046, #ffd400, #00ff78, #00c8ff, #0078ff, #c800ff, #ff0046)' },
     { id: 'noir', nom: 'Noir', css: 'radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.25) 0%, rgba(255,51,51,0) 60%), #0a0a0a', apercu: '#0a0a0a' }
   ];
   var CLE_ORDRE = 'c02-accueil-ordre', CLE_REGLAGES = 'c02-accueil-reglages';
@@ -1155,6 +1161,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
     } else {
       document.documentElement.style.setProperty('--fond-bg', (f || FONDS[0]).css);
     }
+    document.body.classList.toggle('fond-rgb', !!(f && f.rgb && reglages.fond !== 'perso'));
     var boutons = document.querySelectorAll('.fond');
     boutons.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.id === reglages.fond)); });
     majVerre();
@@ -1386,7 +1393,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.3.5';
+  var APP_VERSION = '1.3.6';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
