@@ -2,59 +2,180 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Conditions d'utilisation — C02</title>
 <meta name="description" content="Conditions d'utilisation de l'écran d'accueil et des jeux C02.">
+<meta name="theme-color" content="#333033">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root { --fond: #333033; --fenetre: #2b292c; --trait: #3c393e; --rouge: #ff3333; --texte: #ffffff; --doux: rgba(255,255,255,.72); color-scheme: dark; }
+  /* Mêmes variables que l'accueil : le thème et le fond d'écran choisis s'appliquent ici aussi. */
+  :root {
+    --rouge: #ff3333; --texte: #ffffff; --doux: rgba(255,255,255,.72); --verre: rgba(255,255,255,.14);
+    --feuille: #262428; --barre: rgba(20,19,22,.72); --trait: rgba(255,255,255,.12); --or: #ffd54f; --vit: 1;
+    --fond-bg: radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.42) 0%, rgba(255,51,51,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(255,51,51,.18) 0%, rgba(255,51,51,0) 60%), #333033;
+    color-scheme: dark;
+  }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--fond); color: var(--texte); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; }
-  .haut { max-width: 760px; margin: 0 auto; padding: 22px max(18px, env(safe-area-inset-left,0px)) 0 max(18px, env(safe-area-inset-right,0px)); }
-  .retour { display: inline-block; color: var(--doux); text-decoration: none; font-weight: 500; padding: 8px 0; }
+  html { background: #333033; }
+  body { margin: 0; min-height: 100vh; color: var(--texte); font-family: 'Inter', system-ui, sans-serif; line-height: 1.6; -webkit-text-size-adjust: 100%; }
+  body::before { content: ""; position: fixed; inset: -34px; z-index: -1; pointer-events: none; background: var(--fond-bg) center / cover no-repeat; }
+  body.fond-anime::before { animation: derive calc(26s * var(--vit)) ease-in-out infinite alternate; }
+  body.fond-rgb::before { animation: rgb calc(7s * var(--vit)) linear infinite; }
+  body.fond-rgb.fond-anime::before { animation: rgb calc(7s * var(--vit)) linear infinite, derive calc(26s * var(--vit)) ease-in-out infinite alternate; }
+  @keyframes derive { from { transform: translate(0,0) scale(1); } to { transform: translate(-18px,-12px) scale(1.08); } }
+  @keyframes rgb { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg); } }
+
+  /* Thème clair */
+  body.theme-clair { --texte: #1c1c1e; --doux: rgba(0,0,0,.6); --verre: rgba(0,0,0,.07); --feuille: #f2f2f7; --barre: rgba(255,255,255,.85); --trait: #d1d1d6; --fond-bg: radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.22) 0%, rgba(255,51,51,0) 60%), #f2f2f7; color-scheme: light; }
+  body.theme-clair .carte, body.theme-clair .rappel { background: #ffffff; box-shadow: 0 8px 24px rgba(0,0,0,.07); }
+  /* Thème Liquid Glass */
+  body.theme-glass { --verre: rgba(255,255,255,.2); --feuille: rgba(40,40,52,.34); --barre: rgba(255,255,255,.16); }
+  body.theme-glass .carte, body.theme-glass .rappel, body.theme-glass .haut-barre, body.theme-glass .barre-bas {
+    -webkit-backdrop-filter: blur(26px) saturate(190%) brightness(1.08); backdrop-filter: blur(26px) saturate(190%) brightness(1.08);
+    background-color: rgba(255,255,255,.1);
+    background-image: linear-gradient(135deg, rgba(255,255,255,.34) 0%, rgba(255,255,255,.08) 28%, rgba(255,255,255,.02) 58%, rgba(255,255,255,.16) 100%);
+    border: 0;
+    box-shadow: inset 1.5px 1.5px 0 rgba(255,255,255,.64), inset -1px -1px 0 rgba(255,255,255,.3), inset 0 0 22px rgba(255,255,255,.14), 0 18px 40px rgba(0,0,0,.26), 0 2px 6px rgba(0,0,0,.14);
+  }
+  /* Thème Noël */
+  body.theme-noel {
+    --rouge: #e53935; --texte: #fff8e1; --doux: rgba(255,248,225,.74); --verre: rgba(255,248,225,.12); --feuille: rgba(12,40,30,.94); --barre: rgba(14,48,36,.72); --trait: rgba(255,213,79,.28);
+    --fond-bg: radial-gradient(130% 20% at 12% 104%, #f4f8ff 0 62%, transparent 63%), radial-gradient(140% 18% at 88% 108%, #dbe8f8 0 60%, transparent 61%), radial-gradient(1.6px 1.6px at 12% 12%, #fff 50%, transparent 54%), radial-gradient(1.2px 1.2px at 27% 22%, #fff 50%, transparent 54%), radial-gradient(1.8px 1.8px at 41% 9%, #fff 50%, transparent 54%), radial-gradient(1.2px 1.2px at 58% 18%, #fff 50%, transparent 54%), radial-gradient(1.6px 1.6px at 73% 8%, #fff 50%, transparent 54%), radial-gradient(1.2px 1.2px at 88% 24%, #fff 50%, transparent 54%), radial-gradient(70% 38% at 85% 0%, rgba(229,57,53,.38), transparent 68%), radial-gradient(60% 40% at 5% 70%, rgba(255,213,79,.12), transparent 70%), linear-gradient(180deg, #0a1b3d 0%, #0b3144 48%, #0b3b2a 100%);
+  }
+  body.theme-noel .carte, body.theme-noel .rappel { background: linear-gradient(160deg, rgba(30,92,64,.55), rgba(12,44,32,.55)); box-shadow: inset 0 0 0 1px rgba(255,213,79,.3); }
+  body.theme-noel .haut-barre, body.theme-noel .barre-bas { background: linear-gradient(180deg, rgba(20,66,48,.78), rgba(10,38,28,.82)); box-shadow: inset 0 0 0 1px rgba(255,213,79,.4), 0 12px 30px rgba(0,0,0,.45); }
+  body.theme-noel h2 { color: var(--or); }
+  body.theme-noel .haut-barre { top: calc(50px + env(safe-area-inset-top, 0px)); margin-top: calc(50px + env(safe-area-inset-top, 0px)); }
+  body.theme-noel a:not(.bouton) { color: #ffab91; }
+
+  /* Mise en page */
+  .haut-barre { position: sticky; top: calc(10px + env(safe-area-inset-top, 0px)); z-index: 10; max-width: 760px; margin: calc(10px + env(safe-area-inset-top, 0px)) auto 0; width: calc(100% - 32px); display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 10px 8px 16px; border-radius: 30px; background: var(--barre); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); box-shadow: 0 10px 30px rgba(0,0,0,.28); }
+  .retour { color: var(--texte); text-decoration: none; font-weight: 500; font-size: 15px; padding: 6px 0; }
   .retour:hover { color: var(--rouge); }
-  article { max-width: 760px; margin: 0 auto; padding: 8px max(18px, env(safe-area-inset-left,0px)) 56px max(18px, env(safe-area-inset-right,0px)); }
-  h1 { font-family: 'Playfair Display', serif; font-weight: 600; font-size: clamp(2rem, 6vw, 2.6rem); color: var(--rouge); margin: 10px 0 6px; line-height: 1.15; }
-  .maj { color: var(--doux); margin: 0 0 28px; font-size: .95rem; }
-  h2 { font-size: 1.15rem; margin: 30px 0 8px; color: var(--texte); }
-  p, li { color: var(--texte); }
-  li { margin-bottom: 6px; }
-  .bloc { background: var(--fenetre); border: 1px solid var(--trait); border-radius: 14px; padding: 18px 20px; }
+  .logo { width: 36px; height: 36px; border-radius: 50%; background: #333033; box-shadow: 0 0 0 1.5px rgba(255,255,255,.25); object-fit: cover; }
+  main { max-width: 760px; margin: 0 auto; padding: 24px max(16px, env(safe-area-inset-left, 0px)) calc(120px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+  h1 { font-family: 'Playfair Display', Georgia, serif; font-weight: 600; font-size: clamp(2rem, 6vw, 2.7rem); color: var(--rouge); margin: 6px 0 4px; line-height: 1.15; letter-spacing: -.5px; }
+  .maj { color: var(--doux); margin: 0 0 22px; font-size: .95rem; }
+  .carte, .rappel { background: var(--verre); border-radius: 22px; padding: 20px 22px; margin: 0 0 14px; }
   .rappel { border-left: 3px solid var(--rouge); }
+  .rappel p { margin: 0; }
+  .carte h2 { font-size: 1.12rem; margin: 0 0 10px; color: var(--texte); }
+  .carte p { margin: 0 0 10px; }
+  .carte p:last-child, .carte ul:last-child { margin-bottom: 0; }
+  .carte ul { margin: 0 0 10px; padding-left: 1.25em; }
+  li { margin-bottom: 6px; }
   a { color: var(--rouge); }
-  .pied { max-width: 760px; margin: 0 auto; padding: 0 max(18px, env(safe-area-inset-left,0px)) 40px max(18px, env(safe-area-inset-right,0px)); color: var(--doux); font-size: .9rem; }
+  .carte, .rappel { animation: monte calc(.5s * var(--vit)) cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(var(--i, 0) * 50ms * var(--vit)); }
+  @keyframes monte { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+  /* Barre du bas, comme celle de l'accueil */
+  .barre-bas { position: fixed; left: 50%; transform: translateX(-50%); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); z-index: 10; width: min(92vw, 380px); padding: 8px; border-radius: 30px; background: var(--barre); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+  .bouton { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; font: inherit; font-weight: 600; font-size: 16px; color: #fff; text-decoration: none; background: var(--rouge); border-radius: 22px; padding: 14px 18px; box-shadow: 0 8px 20px rgba(255,51,51,.35); }
+  .bouton:active { transform: scale(.98); }
+  body.theme-noel .bouton { background: linear-gradient(180deg, #ef5350, #c62828); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 8px 18px rgba(198,40,40,.5); }
+  body.theme-glass .bouton { background-image: linear-gradient(180deg, rgba(255,255,255,.34), rgba(255,255,255,0) 55%); box-shadow: inset 1.5px 1.5px 0 rgba(255,255,255,.6), inset -1px -1px 0 rgba(0,0,0,.14), 0 12px 26px rgba(255,51,51,.38); }
+  :focus-visible { outline: 2px solid var(--rouge); outline-offset: 3px; border-radius: 8px; }
+
+  /* Noël : neige et guirlande */
+  .neige, .guirlande { display: none; }
+  body.theme-noel .neige { display: block; position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  body.theme-noel .guirlande { display: block; position: fixed; left: 0; right: 0; top: env(safe-area-inset-top, 0px); height: 58px; z-index: 11; pointer-events: none; overflow: visible; }
+  .guirlande .fil { fill: none; stroke: #1f3d2c; stroke-width: 2.2; stroke-linecap: round; }
+  .guirlande .culot { fill: #cdb26a; }
+  .guirlande .lampe { animation: scintille calc(1.9s * var(--vit)) ease-in-out infinite; }
+  @keyframes scintille { 0%, 100% { opacity: 1; filter: drop-shadow(0 0 5px currentColor) brightness(1.15); } 50% { opacity: .55; filter: drop-shadow(0 0 1px currentColor) brightness(.8); } }
+  main, .haut-barre { position: relative; z-index: 1; }
+  .haut-barre { position: sticky; }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; } }
 </style>
 </head>
 <body>
-  <div class="haut">
-    <a class="retour" href="../">← Retour à l'accueil</a>
-  </div>
-  <article>
-    <h1>Conditions d'utilisation</h1>
-    <p class="maj">Dernière mise à jour : 17 novembre 2026</p>
-
-    <div class="bloc rappel">
+<script>
+  // Reprend le thème, le fond d'écran et la vitesse choisis dans l'accueil.
+  (function () {
+    var b = document.body, t = 'sombre', r = {};
+    try { t = localStorage.getItem('c02-accueil-theme') || 'sombre'; r = JSON.parse(localStorage.getItem('c02-accueil-reglages') || '{}') || {}; } catch (e) {}
+    var FONDS = {
+      gris: 'radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.42) 0%, rgba(255,51,51,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(255,51,51,.18) 0%, rgba(255,51,51,0) 60%), #333033',
+      violet: 'radial-gradient(120% 60% at 90% 0%, rgba(168,85,247,.5) 0%, rgba(168,85,247,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(236,72,153,.22) 0%, rgba(236,72,153,0) 60%), #1d1830',
+      vert: 'radial-gradient(120% 60% at 90% 0%, rgba(16,185,129,.45) 0%, rgba(16,185,129,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(132,204,22,.18) 0%, rgba(132,204,22,0) 60%), #0b1f17',
+      ocean: 'radial-gradient(120% 60% at 90% 0%, rgba(14,165,233,.5) 0%, rgba(14,165,233,0) 60%), radial-gradient(90% 50% at 0% 100%, rgba(59,130,246,.2) 0%, rgba(59,130,246,0) 60%), #0c1a2e',
+      rgb: 'radial-gradient(75% 50% at 12% 8%, rgba(255,0,70,.9) 0%, rgba(255,0,70,0) 65%), radial-gradient(75% 50% at 92% 32%, rgba(0,255,120,.8) 0%, rgba(0,255,120,0) 65%), radial-gradient(85% 55% at 38% 100%, rgba(0,120,255,.9) 0%, rgba(0,120,255,0) 65%), #0a0a14',
+      noir: 'radial-gradient(120% 60% at 90% 0%, rgba(255,51,51,.25) 0%, rgba(255,51,51,0) 60%), #0a0a0a'
+    };
+    if (t === 'glass' || t === 'clair' || t === 'noel') b.classList.add('theme-' + t);
+    var css = FONDS[r.fond] || FONDS.gris;
+    if (r.fond === 'perso' && r.fondPerso) css = 'url("' + r.fondPerso + '") center / cover no-repeat, #000';
+    document.documentElement.style.setProperty('--fond-bg', css);
+    if (r.vitesse > 0) document.documentElement.style.setProperty('--vit', String(1 / r.vitesse));
+    if (r.fondAnime !== false) b.classList.add('fond-anime');
+    if (r.fond === 'rgb' && (t === 'sombre' || t === 'glass')) b.classList.add('fond-rgb');
+    document.addEventListener('DOMContentLoaded', function () {
+    var cartes = document.querySelectorAll('.carte, .rappel');
+    for (var i = 0; i < cartes.length; i++) cartes[i].style.setProperty('--i', i);
+    if (t === 'noel') {
+      // Guirlande lumineuse et neige, comme sur l'accueil.
+      var ns = 'http://www.w3.org/2000/svg', g = document.getElementById('guirlande'), w = window.innerWidth, span = Math.max(150, Math.min(240, w / 3));
+      g.setAttribute('viewBox', '0 0 ' + w + ' 58'); g.setAttribute('preserveAspectRatio', 'none');
+      var d = 'M-10 4', x = -10;
+      while (x < w + 10) { d += ' Q' + (x + span / 2) + ' 40 ' + (x + span) + ' 4'; x += span; }
+      var fil = document.createElementNS(ns, 'path'); fil.setAttribute('d', d); fil.setAttribute('class', 'fil'); g.appendChild(fil);
+      var long = fil.getTotalLength(), n = Math.round(long / 36), cols = ['#ff3b3b', '#ffd54f', '#4caf50', '#42a5f5', '#ff7043'];
+      for (var k = 1; k < n; k++) {
+        var pt = fil.getPointAtLength(long * k / n), c = cols[k % 5], gr = document.createElementNS(ns, 'g');
+        gr.setAttribute('class', 'lampe'); gr.style.color = c; gr.style.animationDelay = ((k * 0.37) % 1.9).toFixed(2) + 's';
+        var cu = document.createElementNS(ns, 'rect'); cu.setAttribute('class', 'culot'); cu.setAttribute('x', pt.x - 2.6); cu.setAttribute('y', pt.y - 1); cu.setAttribute('width', 5.2); cu.setAttribute('height', 5); cu.setAttribute('rx', 1);
+        var am = document.createElementNS(ns, 'path'); am.setAttribute('d', 'M' + (pt.x - 4.4) + ' ' + (pt.y + 4) + ' Q' + (pt.x - 6.5) + ' ' + (pt.y + 14) + ' ' + pt.x + ' ' + (pt.y + 16) + ' Q' + (pt.x + 6.5) + ' ' + (pt.y + 14) + ' ' + (pt.x + 4.4) + ' ' + (pt.y + 4) + ' Z'); am.setAttribute('fill', c);
+        gr.appendChild(cu); gr.appendChild(am); g.appendChild(gr);
+      }
+      var cv = document.getElementById('neige'), cx = cv.getContext('2d'), fl = [], k2 = Math.min(2, window.devicePixelRatio || 1);
+      function taille() { cv.width = Math.round(window.innerWidth * k2); cv.height = Math.round(window.innerHeight * k2); }
+      taille(); window.addEventListener('resize', taille);
+      for (var q = 0; q < 70; q++) { var pr = Math.random(); fl.push({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, r: .8 + pr * 2.4, v: .25 + pr, a: .3 + pr * .6, ph: Math.random() * 6.28 }); }
+      var reduit = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, vit = r.vitesse > 0 ? r.vitesse : 1;
+      function dessiner(t) {
+        cx.clearRect(0, 0, cv.width, cv.height);
+        fl.forEach(function (f) {
+          if (!reduit) { f.y += f.v * vit; f.x += Math.sin(t / 1100 + f.ph) * .4 * vit; if (f.y > window.innerHeight + 6) { f.y = -6; f.x = Math.random() * window.innerWidth; } }
+          cx.globalAlpha = f.a; cx.beginPath(); cx.arc(f.x * k2, f.y * k2, f.r * k2, 0, 6.2832); cx.fillStyle = '#fff'; cx.fill();
+        });
+        cx.globalAlpha = 1;
+        if (!reduit && !document.hidden) requestAnimationFrame(dessiner);
+      }
+      requestAnimationFrame(dessiner);
+      document.addEventListener('visibilitychange', function () { if (!document.hidden && !reduit) requestAnimationFrame(dessiner); });
+    }
+    });
+  })();
+</script>
+<canvas class="neige" id="neige" aria-hidden="true"></canvas>
+<svg class="guirlande" id="guirlande" aria-hidden="true"></svg>
+<header class="haut-barre">
+  <a class="retour" href="../">← Accueil</a>
+  <img class="logo" src="icon-192.png" alt="C02" width="36" height="36">
+</header>
+<main>
+  <h1>Conditions d'utilisation</h1>
+  <p class="maj">Dernière mise à jour : 17 novembre 2026</p>
+  <div class="bloc rappel">
       <p>En utilisant l'écran d'accueil C02 et les apps et jeux qu'il présente, tu acceptes les conditions ci-dessous. Si tu ne les acceptes pas, n'utilise pas le site.</p>
     </div>
-
-    <h2>1. Édition et hébergement</h2>
+  <section class="carte"><h2>1. Édition et hébergement</h2>
     <p><strong>Éditeur du site :</strong> Damien ROBINSON (alias DRFR0bin).</p>
     <p><strong>Contact :</strong> <a href="mailto:drfr.robin@gmail.com">drfr.robin@gmail.com</a>.</p>
     <p><strong>Hébergement de ce site :</strong> l'écran d'accueil et les pages associées (dont celle-ci) sont des pages statiques publiées sur GitHub Pages (GitHub Inc.). Il n'y a plus de serveur WordPress derrière c02.app.</p>
     <p><strong>Hébergement des services :</strong> NC Cloud (Nextcloud), Talk et Speed Test sont auto-hébergés sur un serveur privé situé en France. Leur accès sécurisé passe par Cloudflare (Cloudflare Tunnels).</p>
-    <p><strong>Nom de domaine et sécurité :</strong> le nom de domaine et le DNS sont gérés via Cloudflare Inc. Les échanges sont protégés par HTTPS.</p>
-
-    <h2>2. Avertissement et responsabilité</h2>
+    <p><strong>Nom de domaine et sécurité :</strong> le nom de domaine et le DNS sont gérés via Cloudflare Inc. Les échanges sont protégés par HTTPS.</p></section>
+<section class="carte"><h2>2. Avertissement et responsabilité</h2>
     <p>Le service est fourni « en l'état », sans garantie de disponibilité, de conservation des données ou de continuité de service.</p>
     <ul>
       <li>L'éditeur ne peut pas être tenu responsable des pertes éventuelles de données, notamment celles de l'espace Nextcloud.</li>
       <li>Il est déconseillé de stocker sur cet espace des documents critiques, confidentiels ou uniques.</li>
       <li>Chaque utilisateur est responsable de conserver une copie de ses fichiers sur un autre support.</li>
-    </ul>
-
-    <h2>3. Protection de la vie privée (RGPD)</h2>
+    </ul></section>
+<section class="carte"><h2>3. Protection de la vie privée (RGPD)</h2>
     <p>Le site limite la collecte de données au strict nécessaire.</p>
     <ul>
       <li><strong>L'écran d'accueil</strong> : aucun compte, et les réglages (apps, dossiers, fond d'écran, options) sont enregistrés uniquement dans le stockage local de ton navigateur. Ils ne sont pas transmis au site. Effacer les données du navigateur les supprime. Une image de fond choisie reste sur ton appareil.</li>
@@ -68,25 +189,22 @@
     <p><strong>Base légale :</strong> consentement de l'utilisateur et intérêt légitime de l'éditeur à assurer le fonctionnement et la sécurité du service.</p>
     <p><strong>Conservation :</strong> les données liées à un compte sont conservées tant que le compte est actif. Elles peuvent être supprimées sur simple demande.</p>
     <p><strong>Tes droits :</strong> pour demander l'accès, la rectification ou la suppression de tes données, écris à l'adresse de contact ci-dessus.</p>
-    <p><strong>Mineurs :</strong> les mineurs doivent obtenir l'autorisation de leur représentant légal avant d'utiliser le service.</p>
-
-    <h2>4. Bon usage</h2>
+    <p><strong>Mineurs :</strong> les mineurs doivent obtenir l'autorisation de leur représentant légal avant d'utiliser le service.</p></section>
+<section class="carte"><h2>4. Bon usage</h2>
     <ul>
       <li>Utilise le site et les jeux de manière légale et respectueuse des autres.</li>
       <li>N'essaie pas de perturber le fonctionnement du site, de contourner ses protections ou d'accéder à des données qui ne te sont pas destinées.</li>
-    </ul>
+    </ul></section>
+<section class="carte"><h2>5. Liens vers d'autres sites</h2>
+    <p>Les applications de l'écran d'accueil ouvrent des sites externes, qui ont leurs propres conditions. L'éditeur n'est pas responsable de leur contenu ni de leur disponibilité.</p></section>
+<section class="carte"><h2>6. Propriété intellectuelle</h2>
+    <p>Sauf mention contraire, les outils utilisés (Nextcloud, Nextcloud Talk, OpenSpeedTest et autres logiciels open source) appartiennent à leurs auteurs respectifs et sont utilisés selon leurs licences. Le contenu personnel publié par Damien ROBINSON reste sa propriété exclusive. Le code des jeux est publié sur GitHub selon les conditions indiquées dans leurs dépôts.</p></section>
+<section class="carte"><h2>7. Droit applicable</h2>
+    <p>Les présentes conditions sont soumises au droit français.</p></section>
 
-    <h2>5. Liens vers d'autres sites</h2>
-    <p>Les applications de l'écran d'accueil ouvrent des sites externes, qui ont leurs propres conditions. L'éditeur n'est pas responsable de leur contenu ni de leur disponibilité.</p>
-
-    <h2>6. Propriété intellectuelle</h2>
-    <p>Sauf mention contraire, les outils utilisés (Nextcloud, Nextcloud Talk, OpenSpeedTest et autres logiciels open source) appartiennent à leurs auteurs respectifs et sont utilisés selon leurs licences. Le contenu personnel publié par Damien ROBINSON reste sa propriété exclusive. Le code des jeux est publié sur GitHub selon les conditions indiquées dans leurs dépôts.</p>
-
-    <h2>7. Droit applicable</h2>
-    <p>Les présentes conditions sont soumises au droit français.</p>
-  </article>
-  <div class="pied">
-    <p>© Damien ROBINSON (DRFR0bin). Voir aussi <a href="../">l'accueil</a>.</p>
-  </div>
+</main>
+<nav class="barre-bas" aria-label="Navigation">
+  <a class="bouton" href="../">Retour à l'accueil</a>
+</nav>
 </body>
 </html>
