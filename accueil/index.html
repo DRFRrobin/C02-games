@@ -569,7 +569,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
   </div>
 
   <nav class="barre" aria-label="Navigation">
-    <svg class="decor-barre" viewBox="0 0 356 70" aria-hidden="true"><g id="decor-barre-scene"></g></svg>
+    <svg class="decor-barre" viewBox="0 0 356 112" aria-hidden="true"><g id="decor-barre-scene"></g></svg>
     <svg class="neige-barre" viewBox="0 0 356 46" preserveAspectRatio="none" aria-hidden="true"><g id="neige-barre"></g></svg>
     <span class="onglet-bulle" id="onglet-bulle" aria-hidden="true"></span>
     <button class="onglet" id="onglet-apps" role="tab" aria-selected="true" type="button">
@@ -1631,7 +1631,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
 
   // Décor posé sur la neige qui recouvre la barre du bas : maison en pain d'épice, sucres d'orge, bonbons.
   function u(id, x, y, w, h) { return '<use href="#' + id + '" x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '"/>'; }
-  var DECOR = u('cane', 6, 18, 26, 50) + u('sucette', 36, 28, 20, 41) + u('maison', 148, 6, 72, 62) + u('sucette', 250, 30, 18, 38) + u('bonbon', 276, 54, 26, 16) + u('cane', 324, 20, 26, 48);
+  var DECOR = u('cane', 4, 30, 32, 80) + u('sucette', 40, 46, 26, 64) + u('sapin', 74, 52, 38, 58) + u('maison', 118, 18, 112, 94) + u('bonhomme', 236, 58, 30, 52) + u('sucette', 270, 52, 24, 60) + u('bonbon', 292, 84, 36, 26) + u('cane', 324, 30, 32, 80);
   // Neige épaisse sur la barre : dessus en bosses irrégulières, dessous en gouttes arrondies, reflets qui scintillent.
   function graine(n) { var x = n; return function () { x = (x * 16807) % 2147483647; return x / 2147483647; }; }
   function neigeBarre() {
@@ -1782,7 +1782,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.3.11';
+  var APP_VERSION = '1.3.12';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
