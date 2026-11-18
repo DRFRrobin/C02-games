@@ -44,6 +44,7 @@ body {
 .points button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: var(--doux); opacity: .45; cursor: pointer; transition: opacity calc(.2s * var(--vit, 1)) ease, transform calc(.2s * var(--vit, 1)) ease; }
 .points button[aria-current="true"] { opacity: 1; transform: scale(1.25); background: var(--texte); }
 .toast { position: fixed; left: 50%; bottom: calc(110px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 90; background: var(--feuille); color: var(--texte); border-radius: 22px; padding: 10px 18px; font-size: 14px; box-shadow: 0 12px 30px rgba(0,0,0,.4); max-width: 90vw; text-align: center; }
+.pastille-plus { position: fixed; z-index: 70; min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; background: var(--rouge); color: #fff; font: 700 12px/22px 'Inter', system-ui, sans-serif; text-align: center; pointer-events: none; box-shadow: 0 4px 10px rgba(0,0,0,.35); }
 .store-outils { max-width: 1100px; margin: 14px auto 0; display: flex; justify-content: flex-end; }
 .store-section { max-width: 1100px; margin: 26px auto 0; }
 .store-section h2 { font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: var(--doux); margin: 0 0 12px; font-weight: 600; }
@@ -901,7 +902,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
       total += liste.length;
       ul.parentElement.hidden = liste.length === 0;
       liste.forEach(function (app) {
-        var li = document.createElement('li'); li.className = 'store-ligne';
+        var li = document.createElement('li'); li.className = 'store-ligne'; li.dataset.id = app.id;
         var ic = document.createElement('span'); ic.className = 'icone'; ic.style.background = app.fond;
         ic.innerHTML = iconeHTML(app);
         var txt = document.createElement('div'); txt.className = 'store-texte';
@@ -911,7 +912,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
         var dedans = surAccueil(app.id);
         var b = document.createElement('button'); b.type = 'button'; b.className = 'bouton' + (dedans ? ' non' : '');
         b.textContent = dedans ? 'Retirer' : 'Ajouter';
-        b.addEventListener('click', function () { basculer(app.id); });
+        b.addEventListener('click', function () { basculerAnime(app.id); });
         li.appendChild(ic); li.appendChild(txt); li.appendChild(b);
         ul.appendChild(li);
       });
@@ -922,11 +923,13 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
     bt.textContent = tout ? 'Tout retirer' : 'Tout ajouter';
     bt.classList.toggle('non', tout);
   }
+  // « Tout ajouter » / « Tout retirer » : chaque app part l'une après l'autre, en cascade.
   document.getElementById('tout-ajouter').addEventListener('click', function () {
     var tout = APPS.every(function (a) { return surAccueil(a.id); });
-    if (tout) { APPS.forEach(function (a) { retirer(a.id); }); }
-    else { APPS.forEach(function (a) { if (!surAccueil(a.id)) ajouterSurAccueil(a.id); }); animerEntree = true; }
-    nettoyer(); sauver(); rendre();
+    var ids = APPS.filter(function (a) { return tout ? surAccueil(a.id) : !surAccueil(a.id); }).map(function (a) { return a.id; });
+    var btn = document.getElementById('tout-ajouter');
+    anime(btn, [{ transform: 'scale(1)' }, { transform: 'scale(.92)', offset: .4 }, { transform: 'scale(1)' }], { duration: 280, easing: SOUPLE });
+    ids.forEach(function (id, i) { setTimeout(function () { basculerAnime(id); }, i * 130 / vitesse()); });
   });
   document.getElementById('recherche').addEventListener('input', rendreStore);
   // Un jeu ajouté depuis le Store va dans le dossier Jeux ; une app reste sur l'accueil.
@@ -940,9 +943,57 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
     }
     etat.grille.push(id);
   }
-  function basculer(id) {
-    if (surAccueil(id)) retirer(id); else { ajouterSurAccueil(id); animerEntree = true; }
+  function basculer(id, calme) {
+    if (surAccueil(id)) retirer(id); else { ajouterSurAccueil(id); if (!calme) animerEntree = true; }
     nettoyer(); sauver(); rendre();
+  }
+  // Store : le bouton se retourne et l'icône de l'app s'envole vers « Mes apps » (ou en revient au retrait).
+  function basculerAnime(id) {
+    var sel = '#page-store .store-ligne[data-id="' + id + '"]';
+    var li = document.querySelector(sel), tab = document.querySelector('#onglet-apps svg') || document.getElementById('onglet-apps');
+    if (REDUIT || !li || !tab) return basculer(id, true);
+    var dedans = surAccueil(id), ic = li.querySelector('.icone'), bt = li.querySelector('.bouton');
+    var ir = ic.getBoundingClientRect(), tr = tab.getBoundingClientRect(), tx = tr.left + tr.width / 2, ty = tr.top + tr.height / 2;
+    vibre(10);
+    anime(bt, [{ transform: 'perspective(300px) rotateX(0deg)' }, { transform: 'perspective(300px) rotateX(90deg)' }], { duration: 200, easing: 'ease-in', fill: 'forwards' });
+    setTimeout(function () {
+      basculer(id, true);
+      var li2 = document.querySelector(sel);
+      if (!li2) return;
+      anime(li2.querySelector('.bouton'), [{ transform: 'perspective(300px) rotateX(90deg)' }, { transform: 'perspective(300px) rotateX(0deg)' }], { duration: 240, easing: SOUPLE });
+      var ic2 = li2.querySelector('.icone'), nr = ic2.getBoundingClientRect();
+      if (!dedans) {
+        // Ajout : trois copies de l'icône filent vers l'onglet, en arc, avec une traînée.
+        var dx = tx - (ir.left + ir.width / 2), dy = ty - (ir.top + ir.height / 2);
+        for (var k = 0; k < 3; k++) {
+          var f = ic.cloneNode(true);
+          f.style.cssText = 'position:fixed;left:' + ir.left + 'px;top:' + ir.top + 'px;width:' + ir.width + 'px;height:' + ir.height + 'px;z-index:60;pointer-events:none;margin:0';
+          document.body.appendChild(f);
+          var a = anime(f, [
+            { transform: 'translate(0,0) scale(1)', opacity: k ? .55 - k * .15 : 1 },
+            { transform: 'translate(' + dx * .5 + 'px,' + (dy * .5 - 46) + 'px) scale(.8)', opacity: k ? .4 - k * .1 : 1, offset: .5 },
+            { transform: 'translate(' + dx + 'px,' + dy + 'px) scale(.25)', opacity: 0 }
+          ], { duration: 640, delay: k * 70, easing: 'cubic-bezier(.5,0,.3,1)', fill: 'backwards' });
+          if (a) a.onfinish = (function (n) { return function () { n.remove(); }; })(f); else f.remove();
+        }
+        anime(ic2, [{ transform: 'scale(1)' }, { transform: 'scale(1.22) translateY(-5px)', offset: .3 }, { transform: 'scale(1)' }], { duration: 420, easing: SOUPLE });
+        setTimeout(function () { pastilleOnglet(tr, '+1', tab); }, 560 / vitesse());
+      } else {
+        // Retrait : l'icône revient de l'onglet jusqu'à sa place.
+        var rx = tx - (nr.left + nr.width / 2), ry = ty - (nr.top + nr.height / 2);
+        anime(ic2, [{ transform: 'translate(' + rx + 'px,' + ry + 'px) scale(.25)', opacity: 0 }, { transform: 'translate(0,0) scale(1)', opacity: 1 }], { duration: 540, easing: 'cubic-bezier(.3,1.5,.5,1)' });
+        pastilleOnglet(tr, '−1', tab);
+      }
+    }, 200 / vitesse());
+  }
+  function pastilleOnglet(r, txt, tab) {
+    var o = document.getElementById('onglet-apps');
+    anime(o, [{ transform: 'scale(1)' }, { transform: 'scale(1.16)', offset: .4 }, { transform: 'scale(1)' }], { duration: 360, easing: 'cubic-bezier(.3,1.6,.5,1)' });
+    var p = document.createElement('span'); p.className = 'pastille-plus'; p.textContent = txt;
+    p.style.left = (r.right - 6) + 'px'; p.style.top = (r.top - 14) + 'px';
+    document.body.appendChild(p);
+    var a = anime(p, [{ opacity: 0, transform: 'translateY(6px) scale(.5)' }, { opacity: 1, transform: 'translateY(0) scale(1)', offset: .3 }, { opacity: 1, transform: 'translateY(-4px) scale(1)', offset: .7 }, { opacity: 0, transform: 'translateY(-14px) scale(.9)' }], { duration: 900, easing: 'ease-out' });
+    if (a) a.onfinish = function () { p.remove(); }; else p.remove();
   }
 
   // ---- Dossier ouvert ----
@@ -1731,7 +1782,7 @@ body.edition .app:nth-child(2n) .icone { animation-direction: alternate-reverse;
   });
 
   // ---- Mises à jour : version publiée (version.json), comme pour C02 Naval ----
-  var APP_VERSION = '1.3.10';
+  var APP_VERSION = '1.3.11';
   var CLE_MAJ = 'c02-maj-tentee';
   var bandeau = document.getElementById('maj-bandeau'), msgMaj = document.getElementById('msg-maj');
   document.getElementById('version-app').textContent = APP_VERSION;
